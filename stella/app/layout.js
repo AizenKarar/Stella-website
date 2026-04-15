@@ -19,6 +19,8 @@ export default function RootLayout({ children }) {
                             <div className="flex gap-12 items-center ml-10">
                                 <a href="/appointments" className="text-white font-bold text-0.5xl uppercase tracking-wider hover:text-[#F2C4CE]
                                  transition-colors">Appointment</a>
+                                <a href="/blogs" className="text-white font-bold text-0.5xl uppercase tracking-wider hover:text-[#F2C4CE] 
+                                 transition-colors">Blog</a>
                             </div>
                         </nav>
                     </div>
