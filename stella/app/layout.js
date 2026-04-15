@@ -17,6 +17,19 @@ export default function RootLayout({ children }) {
                         </Link>
                         <nav>
                             <div className="flex gap-12 items-center ml-10">
+                                <div className="relative group">
+                                    <button className="text-white font-bold text-0.5xl uppercase tracking-wider flex items-center gap-2 group-hover:text-[#F2C4CE] transition-colors py-2">
+                                        Products<span className="text-[#F2C4CE] text-sm mt-1">V</span>
+                                    </button>
+                                    <div className="absolute top-full left-0 pt-2 w-56 hidden group-hover:flex flex-col">
+                                        <div className="bg-[#232227] border border-[#45444A] rounded shadow-2xl flex flex-col overflow-hidden">
+                                            <a href="/products/toys" className="text-white p-4 hover:bg-[#35343A] hover:text-[#F2C4CE] 
+                                            transition-colors uppercase font-bold tracking-wide border-b border-[#45444A]">Toys</a>
+                                            <a href="/products/food" className="text-white p-4 hover:bg-[#35343A] hover:text-[#F2C4CE] 
+                                            transition-colors uppercase font-bold tracking-wide border-b border-[#45444A]">Food</a>
+                                        </div>
+                                    </div>
+                                </div>
                                 <a href="/appointments" className="text-white font-bold text-0.5xl uppercase tracking-wider hover:text-[#F2C4CE]
                                  transition-colors">Appointment</a>
                                 <a href="/blogs" className="text-white font-bold text-0.5xl uppercase tracking-wider hover:text-[#F2C4CE] 
