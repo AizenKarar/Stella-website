@@ -18,8 +18,8 @@ export async function GET(request) {
         const products = await prisma.product.findMany({
             where: databaserules
         });
-        return NextResponse.json(products, { status: 200 });
+        return NextResponse.json(products);
     } catch (error) {
-        return NextResponse.json({ error: "Failed to fetch products" }, { status: 500 });
+        return NextResponse.json({ error: "Failed to fetch products" });
     }
 }
