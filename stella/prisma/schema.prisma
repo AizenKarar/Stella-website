@@ -9,12 +9,13 @@ datasource db {
 
 model User {
   id           String        @id @default(uuid())
-  clerkId      String        @unique // Used to sync with Clerk Authentication
+  clerkId      String        @unique
   email        String        @unique
   name         String?
   phone        String?
   orders       Order[]
   appointments Appointment[]
+  cartitems    CartItem[]
   createdAt    DateTime      @default(now())
   updatedAt    DateTime      @updatedAt
 }
@@ -42,8 +43,18 @@ model Product {
   animalType  AnimalType
   category    ProductCategory
   orderItems  OrderItem[]
+  cartitems   CartItem[]
   createdAt   DateTime        @default(now())
   updatedAt   DateTime        @updatedAt
+}
+
+model CartItem {
+  id        String  @id @default(uuid())
+  userid    String
+  user      User    @relation(fields: [userid], references: [id], onDelete: Cascade)
+  productid String
+  product   Product @relation(fields: [productid], references: [id], onDelete: Cascade)
+  quantity  Int
 }
 
 model Order {
