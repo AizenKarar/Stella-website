@@ -26,6 +26,8 @@ export default function RootLayout({ children }) {
                                             transition-colors uppercase font-bold tracking-wide border-b border-[#45444A]">Toys</a>
                                             <a href="/products/food" className="text-white p-4 hover:bg-[#35343A] hover:text-[#F2C4CE] 
                                             transition-colors uppercase font-bold tracking-wide border-b border-[#45444A]">Food</a>
+                                            <a href="/products/accessories" className="text-white p-4 hover:bg-[#35343A] hover:text-[#F2C4CE] 
+                                            transition-colors uppercase font-bold tracking-wide border-b border-[#45444A]">Accessories</a>
                                         </div>
                                     </div>
                                 </div>
