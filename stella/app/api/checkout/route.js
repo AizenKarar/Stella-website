@@ -23,6 +23,7 @@ export async function POST(request) {
         if (cartitems.length === 0) {
             return Response.json({ error: "empty cart" });
         }
+
         let totalamount = 0;
         let emailitems = "";
         for (let i = 0; i < cartitems.length; i = i + 1) {
@@ -32,6 +33,7 @@ export async function POST(request) {
             totalamount = totalamount + (itemprice * itemquantity);
             emailitems = emailitems + "- " + itemquantity + "x " + itemname + " (৳" + itemprice + " each)\n";
         }
+
         const neworder = await prisma.order.create({
             data: {
                 userId: userid,
@@ -40,6 +42,7 @@ export async function POST(request) {
                 status: "PENDING"
             }
         });
+
         for (let i = 0; i < cartitems.length; i = i + 1) {
             await prisma.orderItem.create({
                 data: {
@@ -50,6 +53,7 @@ export async function POST(request) {
                 }
             });
         }
+
         await prisma.cartItem.deleteMany({
             where: {
                 userid: userid
