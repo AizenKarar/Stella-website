@@ -48,22 +48,24 @@ export default function checkoutpage() {
             setTimeout(() => settoastmessage(""), 3000);
             return;
         }
-        const fulladdress = firstname + " " + lastname + ", " + address + ", " + city + ", " + district + " " + zip;
+        const fulladdress = firstname + " " + lastname + "\n" + address + "\n" + city + ", " + district + " " + zip;
         try {
             settoastmessage("processing order...");
             const response = await fetch("/api/checkout", {
                 method: "POST",
                 body: JSON.stringify({
-                    email: "customer@email.com",
-                    address: fulladdress
+                    email: "anjum.haque.shruti@g.bracu.ac.bd",
+                    address: fulladdress,
+                    paymentmethod: "cash on delivery",
+                    deliverymethod: "standard delivery"
                 })
             });
             const data = await response.json();
             if (data.success === true) {
-                settoastmessage("order placed successfully!");
+                settoastmessage("order placed successfully! check your email.");
                 setTimeout(() => {
                     window.location.href = "/";
-                }, 2000);
+                }, 3000);
             } else {
                 settoastmessage("failed to place order.");
             }
