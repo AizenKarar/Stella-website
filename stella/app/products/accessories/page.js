@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 
-export default function AccessoriesPage() {
+export default function accessoriespage() {
     const [products, setproducts] = useState([]);
     const [animalfilter, setanimalfilter] = useState("ALL");
     const [isloading, setisloading] = useState(true);
@@ -39,7 +39,10 @@ export default function AccessoriesPage() {
     async function addtocart(product) {
         await fetch("/api/cart", {
             method: "POST",
-            body: JSON.stringify({ productid: product.id })
+            body: JSON.stringify({
+                productid: product.id,
+                iscustom: false
+            })
         });
         settoastmessage(product.name + " added to cart!");
         setTimeout(() => {
@@ -60,22 +63,22 @@ export default function AccessoriesPage() {
         }
         setiscustomloading(true);
         try {
-            const response = await fetch("/api/custom", {
+            const response = await fetch("/api/cart", {
                 method: "POST",
                 body: JSON.stringify({
                     productid: selectedcustomid,
-                    description: customdescription
+                    iscustom: true,
+                    customnote: customdescription
                 })
             });
-            const data = await response.json();
 
-            if (data.success === true) {
-                settoastmessage("custom order submitted successfully!");
+            if (response.ok === true) {
+                settoastmessage("custom item added to your cart!");
                 setselectedcustomid("");
                 setcustomdescription("");
                 setsearchterm("");
             } else {
-                settoastmessage("failed to submit custom order.");
+                settoastmessage("failed to add to cart.");
             }
         } catch (error) {
             settoastmessage("network error occurred.");
@@ -114,7 +117,6 @@ export default function AccessoriesPage() {
             </div>
         );
     }
-
     return (
         <div className="p-10 font-sans bg-[#2C2B30] min-h-screen relative">
             <div className="flex justify-between items-center mb-10 border-b border-[#F2C4CE]/30 pb-6">
@@ -154,7 +156,7 @@ export default function AccessoriesPage() {
                                 <div className="flex justify-between items-center mt-4">
                                     <span className="text-2xl font-bold text-[#F2C4CE]">৳{item.price.toFixed(2)}</span>
                                     <button onClick={() => addtocart(item)} className="bg-[#F2C4CE] text-[#2C2B30] px-4 py-2 rounded font-bold uppercase text-sm tracking-wider hover:opacity-80 transition-opacity">
-                                        buy
+                                        add to cart
                                     </button>
                                 </div>
                             </div>
@@ -162,7 +164,6 @@ export default function AccessoriesPage() {
                     ))
                 )}
             </div>
-
             <div className="mt-20 border-t-2 border-[#F2C4CE] pt-10 flex flex-col items-center">
                 <h2 className="text-4xl font-bold text-[#F2C4CE] tracking-wider uppercase mb-8 text-center">
                     custom order
@@ -204,7 +205,7 @@ export default function AccessoriesPage() {
                             <img src={selectedproduct.imageUrl} alt="preview" className="max-h-full object-contain p-2" />
                         ) : (
                             <span className="text-black font-bold uppercase tracking-widest text-sm text-center px-4">
-                                select a product to see picture
+                                select a product
                             </span>
                         )}
                     </div>
@@ -229,7 +230,7 @@ export default function AccessoriesPage() {
                         ) : null}
 
                         <button onClick={submitcustomorder} disabled={iscustomloading} className="bg-[#F2C4CE] text-[#2C2B30] px-12 py-4 rounded font-bold uppercase tracking-widest hover:opacity-80 transition-opacity w-full md:w-1/2">
-                            {iscustomloading === true ? "sending..." : "submit order"}
+                            {iscustomloading === true ? "adding..." : "add custom to cart"}
                         </button>
                     </div>
                 </div>

@@ -49,12 +49,14 @@ model Product {
 }
 
 model CartItem {
-  id        String  @id @default(uuid())
-  userid    String
-  user      User    @relation(fields: [userid], references: [id], onDelete: Cascade)
-  productid String
-  product   Product @relation(fields: [productid], references: [id], onDelete: Cascade)
-  quantity  Int
+  id         String  @id @default(uuid())
+  userid     String
+  user       User    @relation(fields: [userid], references: [id], onDelete: Cascade)
+  productid  String
+  product    Product @relation(fields: [productid], references: [id], onDelete: Cascade)
+  quantity   Int
+  isCustom   Boolean @default(false)
+  customNote String?
 }
 
 model Order {

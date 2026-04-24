@@ -28,12 +28,22 @@ export async function POST(request) {
         let emailitems = "";
         for (let i = 0; i < cartitems.length; i = i + 1) {
             let itemprice = cartitems[i].product.price;
+            let customtext = "";
+            if (cartitems[i].isCustom === true) {
+                itemprice = itemprice + 100;
+                customtext = " (custom note: " + cartitems[i].customNote + ")";
+            }
             let itemquantity = cartitems[i].quantity;
             let itemname = cartitems[i].product.name;
             totalamount = totalamount + (itemprice * itemquantity);
-            emailitems = emailitems + "- " + itemquantity + "x " + itemname + " (৳" + itemprice + " each)\n";
+            emailitems = emailitems + "- " + itemquantity + "x " + itemname + customtext + " (৳" + itemprice + " each)\n";
         }
 
+        let shippingcost = 80;
+        if (deliverymethod.includes("express")) {
+            shippingcost = 240;
+        }
+        totalamount = totalamount + shippingcost;
         const neworder = await prisma.order.create({
             data: {
                 userId: userid,
@@ -44,12 +54,16 @@ export async function POST(request) {
         });
 
         for (let i = 0; i < cartitems.length; i = i + 1) {
+            let finalprice = cartitems[i].product.price;
+            if (cartitems[i].isCustom === true) {
+                finalprice = finalprice + 100;
+            }
             await prisma.orderItem.create({
                 data: {
                     orderId: neworder.id,
                     productId: cartitems[i].product.id,
                     quantity: cartitems[i].quantity,
-                    price: cartitems[i].product.price
+                    price: finalprice
                 }
             });
         }
@@ -63,12 +77,14 @@ export async function POST(request) {
             "thank you for your order! your order id is: " + neworder.id + "\n\n" +
             "--- order summary ---\n\n" +
             "items ordered:\n" + emailitems + "\n" +
+            "shipping cost: ৳" + shippingcost + "\n" +
             "total amount: ৳" + totalamount + "\n\n" +
             "--- delivery & payment ---\n\n" +
             "delivery method: " + deliverymethod + "\n" +
             "payment method: " + paymentmethod + "\n\n" +
             "shipping address:\n" + shippingaddress + "\n\n" +
-            "we will prepare your order for standard delivery soon.";
+            "we will prepare your order soon.";
+
         await resend.emails.send({
             from: "onboarding@resend.dev",
             to: customeremail,

@@ -3,104 +3,97 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 export async function GET() {
     try {
-        const mycart = await prisma.cartItem.findMany({
-            where: {
-                userid: "4976ff87-d687-459d-84f4-d1965b343cf9"
-            },
-            include: {
-                product: true
-            },
-            orderBy: {
-                id: "asc"
-            }
+        const currentuser = "4976ff87-d687-459d-84f4-d1965b343cf9";
+        const cartitems = await prisma.cartItem.findMany({
+            where: { userid: currentuser },
+            include: { product: true }
         });
-        return Response.json(mycart);
+        return Response.json(cartitems);
     } catch (error) {
-        return Response.json([]);
+        console.log("cart get error:", error);
+        return Response.json({ error: "failed" }, { status: 500 });
     }
 }
 export async function POST(request) {
     try {
+        const currentuser = "4976ff87-d687-459d-84f4-d1965b343cf9";
         const body = await request.json();
-        const existingitem = await prisma.cartItem.findFirst({
-            where: {
-                userid: "4976ff87-d687-459d-84f4-d1965b343cf9",
-                productid: body.productid
-            }
-        });
-        if (existingitem !== null) {
-            const updateditem = await prisma.cartItem.update({
-                where: {
-                    id: existingitem.id
-                },
+        const selectedproduct = body.productid;
+        const iscustom = body.iscustom || false;
+        const customnote = body.customnote || "";
+
+        if (iscustom === true) {
+            await prisma.cartItem.create({
                 data: {
-                    quantity: existingitem.quantity + 1
+                    userid: currentuser,
+                    productid: selectedproduct,
+                    quantity: 1,
+                    isCustom: true,
+                    customNote: customnote
                 }
             });
-            return Response.json(updateditem);
         } else {
-            const newitem = await prisma.cartItem.create({
-                data: {
-                    userid: "4976ff87-d687-459d-84f4-d1965b343cf9",
-                    productid: body.productid,
-                    quantity: 1
-                }
+            const existing = await prisma.cartItem.findFirst({
+                where: { userid: currentuser, productid: selectedproduct, isCustom: false }
             });
-            return Response.json(newitem);
-        }
-    } catch (error) {
-        return Response.json({ error: "failed" });
-    }
-}
-export async function DELETE(request) {
-    try {
-        const url = new URL(request.url);
-        const itemid = url.searchParams.get("id");
-        await prisma.cartItem.delete({
-            where: {
-                id: itemid
+
+            if (existing) {
+                await prisma.cartItem.update({
+                    where: { id: existing.id },
+                    data: { quantity: existing.quantity + 1 }
+                });
+            } else {
+                await prisma.cartItem.create({
+                    data: {
+                        userid: currentuser,
+                        productid: selectedproduct,
+                        quantity: 1,
+                        isCustom: false
+                    }
+                });
             }
-        });
+        }
         return Response.json({ success: true });
     } catch (error) {
-        return Response.json({ error: "failed" });
+        console.log("cart post error:", error);
+        return Response.json({ error: "failed" }, { status: 500 });
     }
 }
 
 export async function PUT(request) {
     try {
         const body = await request.json();
-        const existingitem = await prisma.cartItem.findFirst({
-            where: {
-                id: body.cartitemid
-            }
-        });
-        let newquantity = existingitem.quantity;
-        if (body.action === "increase") {
-            newquantity = newquantity + 1;
-        }
-        if (body.action === "decrease") {
-            newquantity = newquantity - 1;
-        }
+        const itemid = body.itemid;
+        const newquantity = body.quantity;
 
         if (newquantity <= 0) {
-            await prisma.cartItem.delete({
-                where: {
-                    id: body.cartitemid
-                }
-            });
-        } else {
-            await prisma.cartItem.update({
-                where: {
-                    id: body.cartitemid
-                },
-                data: {
-                    quantity: newquantity
-                }
-            });
+            return Response.json({ error: "invalid quantity" }, { status: 400 });
         }
+
+        await prisma.cartItem.update({
+            where: { id: itemid },
+            data: { quantity: newquantity }
+        });
+
         return Response.json({ success: true });
     } catch (error) {
-        return Response.json({ error: "failed" });
+        console.log("cart put error:", error);
+        return Response.json({ error: "failed" }, { status: 500 });
+    }
+}
+
+export async function DELETE(request) {
+    try {
+        const body = await request.json();
+        const itemid = body.itemid;
+
+        await prisma.cartItem.delete({
+            where: { id: itemid }
+        });
+
+        return Response.json({ success: true });
+    } catch (error) {
+        console.log("cart delete error:", error);
+        return Response.json({ error: "failed" }, { status: 500 });
     }
 }

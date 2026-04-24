@@ -41,7 +41,11 @@ export default function checkoutpage() {
 
     let subtotal = 0;
     for (let i = 0; i < cartitems.length; i = i + 1) {
-        subtotal = subtotal + (cartitems[i].product.price * cartitems[i].quantity);
+        let currentprice = cartitems[i].product.price;
+        if (cartitems[i].isCustom === true) {
+            currentprice = currentprice + 100;
+        }
+        subtotal = subtotal + (currentprice * cartitems[i].quantity);
     }
     let shippingcost = 80;
     if (shippingmethod === "express") {
@@ -82,7 +86,7 @@ export default function checkoutpage() {
                     if (data.address.postcode) {
                         setzip(data.address.postcode);
                     }
-                    settoastmessage("locationiq api found address!");
+                    settoastmessage("location api found address!");
                 }
             } catch (error) {
                 settoastmessage("failed to connect to location api");
@@ -331,8 +335,15 @@ export default function checkoutpage() {
                                         )}
                                     </div>
                                     <div className="flex flex-col">
-                                        <span className="text-white font-bold">{item.product.name}</span>
-                                        <span className="text-[#F2C4CE] font-bold mt-1">৳{item.product.price}</span>
+                                        <span className="text-white font-bold">
+                                            {item.product.name} {item.isCustom === true ? "(custom)" : ""}
+                                        </span>
+                                        {item.isCustom === true ? (
+                                            <span className="text-[#F2C4CE] text-xs opacity-80 mt-1 pb-1">note: {item.customNote}</span>
+                                        ) : null}
+                                        <span className="text-[#F2C4CE] font-bold mt-1">
+                                            ৳{item.isCustom === true ? (item.product.price + 100).toFixed(2) : item.product.price.toFixed(2)}
+                                        </span>
                                         <span className="text-white opacity-60 text-sm mt-1">qty: {item.quantity}</span>
                                     </div>
                                 </div>
