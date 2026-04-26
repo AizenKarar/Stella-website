@@ -6,6 +6,7 @@ export default function cartpage() {
     const [cartitems, setcartitems] = useState([]);
     const [isloading, setisloading] = useState(true);
     const [toastmessage, settoastmessage] = useState("");
+
     async function fetchcart() {
         try {
             const response = await fetch("/api/cart", { cache: "no-store" });
@@ -23,6 +24,7 @@ export default function cartpage() {
             setisloading(false);
         }
     }
+
     useEffect(() => {
         fetchcart();
     }, []);
@@ -79,95 +81,124 @@ export default function cartpage() {
 
     if (isloading === true) {
         return (
-            <div className="p-10 flex justify-center items-center h-screen bg-[#2C2B30]">
-                <p className="text-[#F2C4CE] font-bold text-xl uppercase tracking-widest animate-pulse">loading cart...</p>
+            <div className="p-10 flex justify-center items-center min-h-screen bg-white">
+                <p className="text-[#1B3B4D] font-bold text-sm uppercase tracking-[0.2em] animate-pulse">loading bag...</p>
             </div>
         );
     }
 
     return (
-        <div className="p-4 md:p-10 font-sans bg-[#2C2B30] min-h-screen">
-            <h1 className="text-4xl font-bold text-[#F2C4CE] tracking-wider uppercase mb-8 border-b border-[#F2C4CE]/30 pb-6">
-                shopping cart
-            </h1>
+        <div className="bg-white min-h-screen font-sans text-[#1B3B4D] p-6 md:p-12 pb-32 relative">
 
-            {cartitems.length === 0 ? (
-                <div className="text-center py-20 border border-[#F2C4CE]/30 rounded bg-[#232227] max-w-3xl mx-auto">
-                    <p className="text-white text-xl uppercase tracking-widest mb-6">your cart is currently empty</p>
-                    <Link href="/products/accessories">
-                        <button className="bg-[#F2C4CE] text-[#2C2B30] px-8 py-3 rounded font-bold uppercase tracking-widest hover:opacity-80 transition-opacity">
-                            continue shopping
-                        </button>
-                    </Link>
-                </div>
-            ) : (
-                <div className="flex flex-col lg:flex-row gap-10 max-w-7xl mx-auto">
-                    <div className="flex-grow flex flex-col gap-6">
-                        {cartitems.map((item) => (
-                            <div key={item.id} className="bg-[#232227] border border-[#F2C4CE]/30 p-4 md:p-6 rounded flex flex-col md:flex-row gap-6 items-center md:items-start relative">
-                                <div className="w-32 h-32 bg-white rounded flex items-center justify-center overflow-hidden flex-shrink-0">
-                                    {item.product.imageUrl ? (
-                                        <img src={item.product.imageUrl} alt={item.product.name} className="max-h-full object-contain p-2" />
-                                    ) : (
-                                        <span className="text-black text-xs font-bold uppercase">no img</span>
-                                    )}
-                                </div>
+            <div className="max-w-[1200px] mx-auto">
+                <header className="mb-12 flex flex-col md:flex-row justify-between items-start md:items-end border-b border-[#1B3B4D] pb-6 gap-6">
+                    <div>
+                        <h1 className="text-4xl md:text-6xl font-black uppercase tracking-tighter leading-none">
+                            Shopping<br />Bag.
+                        </h1>
+                    </div>
+                    <div className="text-xs uppercase tracking-[0.2em] font-bold text-gray-400">
+                        stella pet care // checkout
+                    </div>
+                </header>
 
-                                <div className="flex flex-col flex-grow text-center md:text-left w-full">
-                                    <h2 className="text-xl font-bold text-[#F2C4CE] mb-1">
-                                        {item.product.name} {item.isCustom === true ? "(custom)" : ""}
-                                    </h2>
-                                    {item.isCustom === true ? (
-                                        <p className="text-white opacity-70 text-sm mb-2">note: {item.customNote}</p>
-                                    ) : null}
-                                    <span className="text-white font-bold text-lg mb-4">
-                                        ৳{item.isCustom === true ? (item.product.price + 100).toFixed(2) : item.product.price.toFixed(2)}
-                                    </span>
+                {cartitems.length === 0 ? (
+                    <div className="border border-gray-200 bg-[#FAFAFA] py-24 flex flex-col items-center justify-center text-center">
+                        <span className="text-4xl mb-6 opacity-20">🛍️</span>
+                        <p className="text-[#1B3B4D] text-xs font-bold uppercase tracking-[0.2em] mb-8">your bag is currently empty.</p>
+                        <Link href="/products/accessories">
+                            <button className="bg-[#1B3B4D] text-white px-10 py-4 text-[10px] font-bold uppercase tracking-[0.2em] hover:bg-black transition-colors">
+                                return to collection
+                            </button>
+                        </Link>
+                    </div>
+                ) : (
+                    <div className="flex flex-col lg:flex-row gap-10 lg:gap-16">
 
-                                    <div className="flex items-center justify-center md:justify-start gap-6 mt-auto">
-                                        <div className="flex items-center border border-[#F2C4CE]/30 rounded bg-[#2C2B30]">
-                                            <button onClick={() => updatequantity(item.id, item.quantity, -1)} className="text-[#F2C4CE] px-4 py-2 hover:bg-[#F2C4CE]/10 transition-colors font-bold text-lg">-</button>
-                                            <span className="text-white font-bold px-4">{item.quantity}</span>
-                                            <button onClick={() => updatequantity(item.id, item.quantity, 1)} className="text-[#F2C4CE] px-4 py-2 hover:bg-[#F2C4CE]/10 transition-colors font-bold text-lg">+</button>
-                                        </div>
-                                        <button onClick={() => removeitem(item.id)} className="text-red-400 text-sm font-bold uppercase tracking-wider underline hover:opacity-80 transition-opacity">
-                                            remove
-                                        </button>
+                        <div className="flex-grow flex flex-col gap-6">
+                            {cartitems.map((item) => (
+                                <div key={item.id} className="border border-gray-200 p-6 flex flex-col md:flex-row gap-8 items-start md:items-center relative bg-white hover:border-[#1B3B4D] transition-colors group">
+
+                                    <div className="w-32 h-32 bg-[#FAFAFA] border border-gray-100 flex items-center justify-center p-4 flex-shrink-0">
+                                        {item.product.imageUrl ? (
+                                            <img src={item.product.imageUrl} alt={item.product.name} className="max-h-full object-contain mix-blend-multiply" />
+                                        ) : (
+                                            <span className="text-gray-300 text-[10px] font-bold uppercase tracking-[0.2em]">no img</span>
+                                        )}
                                     </div>
-                                </div>
 
-                                <div className="hidden md:block text-right flex-shrink-0">
-                                    <span className="text-[#F2C4CE] font-bold text-xl block">
-                                        ৳{((item.isCustom === true ? item.product.price + 100 : item.product.price) * item.quantity).toFixed(2)}
-                                    </span>
-                                </div>
-                            </div>
-                        ))}
-                    </div>
+                                    <div className="flex flex-col flex-grow w-full">
+                                        <div className="flex justify-between items-start mb-2 gap-4">
+                                            <h2 className="text-lg font-black uppercase tracking-wider text-[#1B3B4D] leading-tight">
+                                                {item.product.name}
+                                            </h2>
+                                            <div className="text-right">
+                                                <span className="text-xl font-black text-[#1B3B4D]">
+                                                    ৳{((item.isCustom === true ? item.product.price + 100 : item.product.price) * item.quantity).toFixed(2)}
+                                                </span>
+                                            </div>
+                                        </div>
 
-                    <div className="w-full lg:w-[400px]">
-                        <div className="bg-[#232227] border border-[#F2C4CE]/30 p-6 rounded sticky top-24">
-                            <h2 className="text-2xl font-bold text-[#F2C4CE] mb-6 uppercase">order summary</h2>
-                            <div className="flex flex-col gap-4 border-b border-[#F2C4CE]/30 pb-6 mb-6 text-white">
-                                <div className="flex justify-between items-center">
-                                    <span className="opacity-80">subtotal ({cartitems.length} items)</span>
-                                    <span className="font-bold text-xl text-[#F2C4CE]">৳{subtotal.toFixed(2)}</span>
-                                </div>
-                                <p className="text-sm opacity-60 mt-2">shipping and taxes calculated at checkout.</p>
-                            </div>
+                                        {item.isCustom === true ? (
+                                            <p className="text-gray-500 text-xs font-medium bg-[#FAFAFA] p-3 border border-gray-100 mt-2 mb-4 leading-relaxed">
+                                                <span className="font-bold uppercase tracking-wider text-[10px] block mb-1">bespoke note:</span>
+                                                {item.customNote}
+                                            </p>
+                                        ) : (
+                                            <div className="h-4"></div>
+                                        )}
 
-                            <Link href="/checkout">
-                                <button className="bg-[#F2C4CE] text-[#2C2B30] px-10 py-4 rounded font-bold uppercase tracking-widest text-lg hover:opacity-80 transition-opacity w-full">
-                                    proceed to checkout
-                                </button>
-                            </Link>
+                                        <div className="flex items-center justify-between mt-auto pt-4 border-t border-gray-100">
+                                            <div className="flex items-center border border-[#1B3B4D]">
+                                                <button onClick={() => updatequantity(item.id, item.quantity, -1)} className="text-[#1B3B4D] px-4 py-2 hover:bg-[#FAFAFA] transition-colors font-bold text-lg leading-none">-</button>
+                                                <span className="text-[#1B3B4D] font-bold px-4 text-sm border-x border-[#1B3B4D] py-2">{item.quantity}</span>
+                                                <button onClick={() => updatequantity(item.id, item.quantity, 1)} className="text-[#1B3B4D] px-4 py-2 hover:bg-[#FAFAFA] transition-colors font-bold text-lg leading-none">+</button>
+                                            </div>
+                                            <button onClick={() => removeitem(item.id)} className="text-red-500 text-[10px] font-bold uppercase tracking-[0.2em] hover:text-red-700 underline underline-offset-4 transition-colors">
+                                                remove
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            ))}
                         </div>
+
+                        <div className="w-full lg:w-[400px] flex-shrink-0">
+                            <div className="bg-[#FAFAFA] border border-[#1B3B4D] p-8 md:p-10 sticky top-24">
+                                <h2 className="text-sm font-bold text-[#1B3B4D] mb-8 uppercase tracking-[0.2em] border-b border-gray-200 pb-4">order summary</h2>
+
+                                <div className="flex justify-between items-center mb-6 text-xs font-bold uppercase tracking-wider text-gray-500">
+                                    <span>subtotal ({cartitems.length} items)</span>
+                                    <span className="text-lg text-[#1B3B4D]">৳{subtotal.toFixed(2)}</span>
+                                </div>
+
+                                <div className="border-t border-[#1B3B4D] pt-6 mb-8">
+                                    <p className="text-[10px] text-gray-400 uppercase tracking-[0.1em] leading-relaxed">
+                                        shipping, taxes, and final costs will be calculated at the next step.
+                                    </p>
+                                </div>
+
+                                <Link href="/checkout">
+                                    <button className="w-full bg-[#1B3B4D] text-white py-5 font-bold uppercase tracking-[0.2em] text-xs hover:bg-black transition-colors">
+                                        proceed to checkout
+                                    </button>
+                                </Link>
+
+                                <Link href="/products/accessories">
+                                    <p className="text-center mt-6 text-[10px] font-bold uppercase tracking-[0.1em] text-gray-500 hover:text-[#1B3B4D] underline underline-offset-4 cursor-pointer transition-colors">
+                                        continue shopping
+                                    </p>
+                                </Link>
+                            </div>
+                        </div>
+
                     </div>
-                </div>
-            )}
+                )}
+            </div>
 
             {toastmessage !== "" && (
-                <div className="fixed bottom-10 right-10 bg-[#F2C4CE] text-[#2C2B30] px-6 py-4 rounded shadow-2xl font-bold uppercase tracking-wider z-50">
+                <div className="fixed bottom-10 right-10 bg-[#1B3B4D] text-white px-8 py-5 border border-black font-bold uppercase tracking-[0.2em] text-[10px] z-50">
                     {toastmessage}
                 </div>
             )}

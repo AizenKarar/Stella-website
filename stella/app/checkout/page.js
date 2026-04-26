@@ -1,5 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
+import Link from "next/link";
 
 export default function checkoutpage() {
     const [cartitems, setcartitems] = useState([]);
@@ -53,6 +54,7 @@ export default function checkoutpage() {
     }
 
     const total = subtotal + shippingcost;
+
     function getmylocation() {
         if (!navigator.geolocation) {
             settoastmessage("browser does not support location");
@@ -141,219 +143,256 @@ export default function checkoutpage() {
 
     if (isloading === true) {
         return (
-            <div className="p-10 flex justify-center items-center h-screen bg-[#2C2B30]">
-                <p className="text-[#F2C4CE] font-bold text-xl uppercase tracking-widest animate-pulse">loading checkout...</p>
+            <div className="p-10 flex justify-center items-center min-h-screen bg-white">
+                <p className="text-[#1B3B4D] font-bold text-sm uppercase tracking-[0.2em] animate-pulse">secure connection...</p>
             </div>
         );
     }
+
     return (
-        <div className="p-4 md:p-10 font-sans bg-[#2C2B30] min-h-screen">
-            <h1 className="text-4xl font-bold text-[#F2C4CE] tracking-wider uppercase mb-8 border-b border-[#F2C4CE]/30 pb-6">
-                checkout
-            </h1>
-            <div className="flex flex-col lg:flex-row gap-10 max-w-7xl mx-auto">
-                <div className="flex-grow flex flex-col gap-6">
+        <div className="bg-white min-h-screen font-sans text-[#1B3B4D] p-6 md:p-12 pb-32 relative">
+            <div className="max-w-[1400px] mx-auto">
 
-                    <div className="bg-[#232227] border border-[#F2C4CE]/30 p-6 rounded relative">
-                        <div className="absolute -left-4 top-6 bg-[#F2C4CE] text-[#2C2B30] w-8 h-8 rounded-full flex items-center justify-center font-bold text-lg">1</div>
-                        <h2 className="text-2xl font-bold text-[#F2C4CE] mb-6 uppercase pl-4">shipping address</h2>
-                        {currentstep === 1 ? (
-                            <div className="flex flex-col gap-4 pl-4">
-                                <div className="w-full h-48 border border-[#F2C4CE]/30 rounded overflow-hidden">
-                                    <iframe width="100%" height="100%" frameBorder="0" scrolling="no" marginHeight="0" marginWidth="0" src={mapurl}></iframe>
-                                </div>
-                                <div className="mb-2 pb-4 border-b border-[#F2C4CE]/10">
-                                    <button onClick={getmylocation} disabled={islocating} className="bg-[#2C2B30] border border-[#F2C4CE] text-[#F2C4CE] px-4 py-2 rounded font-bold uppercase tracking-widest text-sm hover:bg-[#F2C4CE] hover:text-[#2C2B30] transition-colors flex items-center gap-2">
-                                        {islocating === true ? "calling api route..." : "📍 auto-fill address"}
-                                    </button>
-                                </div>
-                                <div className="flex gap-4">
-                                    <div className="flex-1 flex flex-col gap-2">
-                                        <label className="text-white text-sm font-bold uppercase tracking-wider">first name *</label>
-                                        <input type="text" value={firstname} onChange={(e) => setfirstname(e.target.value)} className="bg-[#2C2B30] border border-[#F2C4CE]/30 text-white p-3 rounded focus:outline-none focus:border-[#F2C4CE]" />
-                                    </div>
-                                    <div className="flex-1 flex flex-col gap-2">
-                                        <label className="text-white text-sm font-bold uppercase tracking-wider">last name *</label>
-                                        <input type="text" value={lastname} onChange={(e) => setlastname(e.target.value)} className="bg-[#2C2B30] border border-[#F2C4CE]/30 text-white p-3 rounded focus:outline-none focus:border-[#F2C4CE]" />
-                                    </div>
-                                </div>
-                                <div className="flex flex-col gap-2 mt-2">
-                                    <label className="text-white text-sm font-bold uppercase tracking-wider">phone number *</label>
-                                    <input type="text" value={phonenumber} onChange={(e) => setphonenumber(e.target.value)} className="bg-[#2C2B30] border border-[#F2C4CE]/30 text-white p-3 rounded focus:outline-none focus:border-[#F2C4CE]" />
-                                </div>
-                                <div className="flex flex-col gap-2 mt-2">
-                                    <label className="text-white text-sm font-bold uppercase tracking-wider">address *</label>
-                                    <input type="text" value={address} onChange={(e) => setaddress(e.target.value)} className="bg-[#2C2B30] border border-[#F2C4CE]/30 text-white p-3 rounded focus:outline-none focus:border-[#F2C4CE]" />
-                                </div>
-                                <div className="flex gap-4">
-                                    <div className="flex-1 flex flex-col gap-2">
-                                        <label className="text-white text-sm font-bold uppercase tracking-wider">zip code *</label>
-                                        <input type="text" value={zip} onChange={(e) => setzip(e.target.value)} className="bg-[#2C2B30] border border-[#F2C4CE]/30 text-white p-3 rounded focus:outline-none focus:border-[#F2C4CE]" />
-                                    </div>
-                                    <div className="flex-1 flex flex-col gap-2">
-                                        <label className="text-white text-sm font-bold uppercase tracking-wider">city *</label>
-                                        <input type="text" value={city} onChange={(e) => setcity(e.target.value)} className="bg-[#2C2B30] border border-[#F2C4CE]/30 text-white p-3 rounded focus:outline-none focus:border-[#F2C4CE]" />
-                                    </div>
-                                    <div className="flex-1 flex flex-col gap-2">
-                                        <label className="text-white text-sm font-bold uppercase tracking-wider">district *</label>
-                                        <input type="text" value={district} onChange={(e) => setdistrict(e.target.value)} className="bg-[#2C2B30] border border-[#F2C4CE]/30 text-white p-3 rounded focus:outline-none focus:border-[#F2C4CE]" />
-                                    </div>
-                                </div>
-                                <button onClick={() => setcurrentstep(2)} className="bg-[#F2C4CE] text-[#2C2B30] px-6 py-3 mt-4 rounded font-bold uppercase tracking-widest hover:opacity-80 transition-opacity w-full md:w-auto self-start">
-                                    continue to shipping method
-                                </button>
-                            </div>
-                        ) : (
-                            <div className="pl-4 text-white opacity-70 flex justify-between items-start">
-                                <div>
-                                    {firstname} {lastname} <br />
-                                    {phonenumber} <br />
-                                    {address}, {city}, {district} {zip}
-                                </div>
-                                <button onClick={() => setcurrentstep(1)} className="text-[#F2C4CE] underline text-sm uppercase tracking-wider font-bold">edit</button>
-                            </div>
-                        )}
+                <header className="mb-16 flex flex-col md:flex-row justify-between items-start md:items-end border-b border-[#1B3B4D] pb-6 gap-6">
+                    <div>
+                        <h1 className="text-4xl md:text-6xl font-black uppercase tracking-tighter leading-none">
+                            Secure<br />Checkout.
+                        </h1>
                     </div>
-
-                    <div className="bg-[#232227] border border-[#F2C4CE]/30 p-6 rounded relative">
-                        <div className="absolute -left-4 top-6 bg-[#2C2B30] border border-[#F2C4CE] text-[#F2C4CE] w-8 h-8 rounded-full flex items-center justify-center font-bold text-lg">2</div>
-                        <h2 className="text-2xl font-bold text-[#F2C4CE] mb-2 uppercase pl-4">shipping method</h2>
-                        {currentstep === 2 ? (
-                            <div className="pl-4 mt-6 flex flex-col gap-4">
-                                <label className="flex items-center gap-4 cursor-pointer">
-                                    <input type="radio" name="shipping" value="standard" checked={shippingmethod === "standard"} onChange={(e) => setshippingmethod(e.target.value)} className="w-5 h-5 accent-[#F2C4CE]" />
-                                    <div className="border border-[#F2C4CE]/30 p-4 rounded bg-[#2C2B30] flex-grow flex justify-between items-center">
-                                        <div>
-                                            <span className="text-white font-bold uppercase tracking-wider block">standard delivery</span>
-                                            <span className="text-white opacity-60 text-sm">2-3 business days</span>
-                                        </div>
-                                        <span className="text-[#F2C4CE] font-bold">৳80</span>
-                                    </div>
-                                </label>
-                                <label className="flex items-center gap-4 cursor-pointer">
-                                    <input type="radio" name="shipping" value="express" checked={shippingmethod === "express"} onChange={(e) => setshippingmethod(e.target.value)} className="w-5 h-5 accent-[#F2C4CE]" />
-                                    <div className="border border-[#F2C4CE]/30 p-4 rounded bg-[#2C2B30] flex-grow flex justify-between items-center">
-                                        <div>
-                                            <span className="text-white font-bold uppercase tracking-wider block">express delivery</span>
-                                            <span className="text-white opacity-60 text-sm">same day delivery</span>
-                                        </div>
-                                        <span className="text-[#F2C4CE] font-bold">৳240</span>
-                                    </div>
-                                </label>
-                                <button onClick={() => setcurrentstep(3)} className="bg-[#F2C4CE] text-[#2C2B30] px-6 py-3 mt-4 rounded font-bold uppercase tracking-widest hover:opacity-80 transition-opacity self-start">
-                                    continue to payment
-                                </button>
-                            </div>
-                        ) : currentstep > 2 ? (
-                            <div className="pl-4 text-white opacity-70 flex justify-between items-start mt-4">
-                                <span>{shippingmethod === "standard" ? "standard delivery (৳80)" : "express delivery (৳240)"}</span>
-                                <button onClick={() => setcurrentstep(2)} className="text-[#F2C4CE] underline text-sm uppercase tracking-wider font-bold">edit</button>
-                            </div>
-                        ) : null}
+                    <div className="text-xs uppercase tracking-[0.2em] font-bold text-gray-400">
+                        stella pet care // final step
                     </div>
+                </header>
 
-                    <div className="bg-[#232227] border border-[#F2C4CE]/30 p-6 rounded relative">
-                        <div className="absolute -left-4 top-6 bg-[#2C2B30] border border-[#F2C4CE] text-[#F2C4CE] w-8 h-8 rounded-full flex items-center justify-center font-bold text-lg">3</div>
-                        <h2 className="text-2xl font-bold text-[#F2C4CE] mb-2 uppercase pl-4">payment</h2>
-                        {currentstep === 3 ? (
-                            <div className="pl-4 mt-6">
-                                <div className="border border-[#F2C4CE] p-4 rounded bg-[#2C2B30]">
-                                    <h3 className="text-white font-bold uppercase tracking-wider mb-2">cash on delivery</h3>
-                                    <p className="text-white opacity-70 text-sm">pay with cash when your order is delivered to your address. no credit card required.</p>
-                                </div>
-                                <button onClick={() => setcurrentstep(4)} className="bg-[#F2C4CE] text-[#2C2B30] px-6 py-3 mt-6 rounded font-bold uppercase tracking-widest hover:opacity-80 transition-opacity">
-                                    review order
-                                </button>
-                            </div>
-                        ) : currentstep > 3 ? (
-                            <div className="pl-4 text-white opacity-70 flex justify-between items-start mt-4">
-                                <span>cash on delivery</span>
-                                <button onClick={() => setcurrentstep(3)} className="text-[#F2C4CE] underline text-sm uppercase tracking-wider font-bold">edit</button>
-                            </div>
-                        ) : null}
-                    </div>
+                <div className="flex flex-col lg:flex-row gap-10 lg:gap-20">
 
-                    <div className="bg-[#232227] border border-[#F2C4CE]/30 p-6 rounded relative">
-                        <div className="absolute -left-4 top-6 bg-[#2C2B30] border border-[#F2C4CE] text-[#F2C4CE] w-8 h-8 rounded-full flex items-center justify-center font-bold text-lg">4</div>
-                        <h2 className="text-2xl font-bold text-[#F2C4CE] mb-2 uppercase pl-4">review & place order</h2>
-                        {currentstep === 4 && (
-                            <div className="pl-4 mt-6">
-                                <div className="bg-[#2C2B30] border border-[#F2C4CE]/30 rounded p-6 mb-8">
-                                    <h3 className="text-[#F2C4CE] font-bold uppercase tracking-widest mb-4 border-b border-[#F2C4CE]/30 pb-2">order summary details</h3>
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-white">
-                                        <div>
-                                            <span className="opacity-60 uppercase tracking-wider text-sm block mb-1">shipping to:</span>
-                                            <span className="font-bold block">{firstname} {lastname}</span>
-                                            <span className="block">{phonenumber}</span>
-                                            <span className="block mt-1">{address}</span>
-                                            <span className="block">{city}, {district} {zip}</span>
-                                        </div>
-                                        <div>
-                                            <span className="opacity-60 uppercase tracking-wider text-sm block mb-1">delivery method:</span>
-                                            <span className="font-bold block">{shippingmethod === "standard" ? "standard delivery (2-3 days)" : "express delivery (same day)"}</span>
-                                            <span className="opacity-60 uppercase tracking-wider text-sm block mb-1 mt-4">payment method:</span>
-                                            <span className="font-bold block">cash on delivery</span>
-                                        </div>
+                    <div className="flex-grow flex flex-col gap-10">
+
+                        {/* STEP 1: ADDRESS */}
+                        <div className={`border-t-4 border-[#1B3B4D] bg-[#FAFAFA] p-8 md:p-10 transition-all ${currentstep === 1 ? 'shadow-lg bg-white' : ''}`}>
+                            <div className="flex justify-between items-center mb-8">
+                                <h2 className="text-2xl font-black uppercase tracking-widest text-[#1B3B4D] flex items-center gap-4">
+                                    <span className="text-sm border border-[#1B3B4D] px-2 py-1">01.</span> shipping address
+                                </h2>
+                                {currentstep > 1 && (
+                                    <button onClick={() => setcurrentstep(1)} className="text-[10px] font-bold uppercase tracking-[0.2em] text-gray-400 hover:text-[#1B3B4D] underline underline-offset-4">edit</button>
+                                )}
+                            </div>
+
+                            {currentstep === 1 ? (
+                                <div className="flex flex-col gap-6">
+                                    <div className="w-full h-56 border border-gray-300 relative overflow-hidden bg-gray-100">
+                                        <iframe width="100%" height="100%" frameBorder="0" scrolling="no" marginHeight="0" marginWidth="0" src={mapurl}></iframe>
                                     </div>
-                                </div>
-                                <button onClick={handleplaceorder} className="bg-[#F2C4CE] text-[#2C2B30] px-10 py-4 rounded font-bold uppercase tracking-widest text-lg hover:opacity-80 transition-opacity w-full">
-                                    place order
-                                </button>
-                            </div>
-                        )}
-                    </div>
-                </div>
-
-                <div className="w-full lg:w-[400px]">
-                    <div className="bg-[#232227] border border-[#F2C4CE]/30 p-6 rounded sticky top-24">
-                        <h2 className="text-2xl font-bold text-[#F2C4CE] mb-6 uppercase">summary</h2>
-                        <div className="flex flex-col gap-4 border-b border-[#F2C4CE]/30 pb-6 mb-6 text-white">
-                            <div className="flex justify-between">
-                                <span className="opacity-80">subtotal</span>
-                                <span>৳{subtotal.toFixed(2)}</span>
-                            </div>
-                            <div className="flex justify-between">
-                                <span className="opacity-80">shipping</span>
-                                <span className="text-[#F2C4CE] font-bold uppercase">৳{shippingcost.toFixed(2)}</span>
-                            </div>
-                            <div className="flex justify-between mt-2 pt-2 border-t border-[#F2C4CE]/10 text-xl font-bold text-[#F2C4CE]">
-                                <span>total</span>
-                                <span>৳{total.toFixed(2)}</span>
-                            </div>
-                        </div>
-                        <h3 className="text-lg font-bold text-[#F2C4CE] mb-4 uppercase flex items-center gap-2">
-                            🛒 cart ({cartitems.length} items)
-                        </h3>
-                        <div className="flex flex-col gap-4 max-h-96 overflow-y-auto pr-2">
-                            {cartitems.map((item) => (
-                                <div key={item.id} className="flex gap-4 items-start border-b border-[#45444A] pb-4">
-                                    <div className="w-20 h-20 bg-white rounded flex items-center justify-center overflow-hidden flex-shrink-0">
-                                        {item.product.imageUrl ? (
-                                            <img src={item.product.imageUrl} alt={item.product.name} className="max-h-full object-contain p-1" />
-                                        ) : (
-                                            <span className="text-black text-xs font-bold uppercase">no img</span>
-                                        )}
+                                    <div className="mb-4">
+                                        <button onClick={getmylocation} disabled={islocating} className="border border-[#1B3B4D] text-[#1B3B4D] px-6 py-3 text-[10px] font-bold uppercase tracking-[0.2em] hover:bg-[#1B3B4D] hover:text-white transition-colors disabled:opacity-50 flex items-center gap-2">
+                                            {islocating === true ? "detecting..." : "📍 auto-fill from map"}
+                                        </button>
+                                    </div>
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                        <div className="flex flex-col">
+                                            <label className="text-[10px] font-bold uppercase tracking-[0.2em] block mb-2 text-gray-500">first name *</label>
+                                            <input type="text" value={firstname} onChange={(e) => setfirstname(e.target.value)} className="w-full bg-transparent border border-gray-300 text-[#1B3B4D] p-4 focus:outline-none focus:border-[#1B3B4D] transition-colors font-medium text-sm" />
+                                        </div>
+                                        <div className="flex flex-col">
+                                            <label className="text-[10px] font-bold uppercase tracking-[0.2em] block mb-2 text-gray-500">last name *</label>
+                                            <input type="text" value={lastname} onChange={(e) => setlastname(e.target.value)} className="w-full bg-transparent border border-gray-300 text-[#1B3B4D] p-4 focus:outline-none focus:border-[#1B3B4D] transition-colors font-medium text-sm" />
+                                        </div>
                                     </div>
                                     <div className="flex flex-col">
-                                        <span className="text-white font-bold">
-                                            {item.product.name} {item.isCustom === true ? "(custom)" : ""}
-                                        </span>
-                                        {item.isCustom === true ? (
-                                            <span className="text-[#F2C4CE] text-xs opacity-80 mt-1 pb-1">note: {item.customNote}</span>
-                                        ) : null}
-                                        <span className="text-[#F2C4CE] font-bold mt-1">
-                                            ৳{item.isCustom === true ? (item.product.price + 100).toFixed(2) : item.product.price.toFixed(2)}
-                                        </span>
-                                        <span className="text-white opacity-60 text-sm mt-1">qty: {item.quantity}</span>
+                                        <label className="text-[10px] font-bold uppercase tracking-[0.2em] block mb-2 text-gray-500">phone number *</label>
+                                        <input type="text" value={phonenumber} onChange={(e) => setphonenumber(e.target.value)} className="w-full bg-transparent border border-gray-300 text-[#1B3B4D] p-4 focus:outline-none focus:border-[#1B3B4D] transition-colors font-medium text-sm" />
+                                    </div>
+                                    <div className="flex flex-col">
+                                        <label className="text-[10px] font-bold uppercase tracking-[0.2em] block mb-2 text-gray-500">address *</label>
+                                        <input type="text" value={address} onChange={(e) => setaddress(e.target.value)} className="w-full bg-transparent border border-gray-300 text-[#1B3B4D] p-4 focus:outline-none focus:border-[#1B3B4D] transition-colors font-medium text-sm" />
+                                    </div>
+                                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                                        <div className="flex flex-col">
+                                            <label className="text-[10px] font-bold uppercase tracking-[0.2em] block mb-2 text-gray-500">zip code *</label>
+                                            <input type="text" value={zip} onChange={(e) => setzip(e.target.value)} className="w-full bg-transparent border border-gray-300 text-[#1B3B4D] p-4 focus:outline-none focus:border-[#1B3B4D] transition-colors font-medium text-sm" />
+                                        </div>
+                                        <div className="flex flex-col">
+                                            <label className="text-[10px] font-bold uppercase tracking-[0.2em] block mb-2 text-gray-500">city *</label>
+                                            <input type="text" value={city} onChange={(e) => setcity(e.target.value)} className="w-full bg-transparent border border-gray-300 text-[#1B3B4D] p-4 focus:outline-none focus:border-[#1B3B4D] transition-colors font-medium text-sm" />
+                                        </div>
+                                        <div className="flex flex-col">
+                                            <label className="text-[10px] font-bold uppercase tracking-[0.2em] block mb-2 text-gray-500">district *</label>
+                                            <input type="text" value={district} onChange={(e) => setdistrict(e.target.value)} className="w-full bg-transparent border border-gray-300 text-[#1B3B4D] p-4 focus:outline-none focus:border-[#1B3B4D] transition-colors font-medium text-sm" />
+                                        </div>
+                                    </div>
+                                    <div className="mt-4 border-t border-gray-200 pt-6">
+                                        <button onClick={() => setcurrentstep(2)} className="bg-[#1B3B4D] text-white px-8 py-4 font-bold uppercase tracking-[0.2em] text-xs hover:bg-black transition-colors self-start">
+                                            continue to delivery
+                                        </button>
                                     </div>
                                 </div>
-                            ))}
+                            ) : (
+                                <div className="text-gray-600 text-sm leading-relaxed font-medium">
+                                    <p className="uppercase tracking-widest text-[#1B3B4D] font-bold mb-1">{firstname} {lastname}</p>
+                                    <p>{address}</p>
+                                    <p>{city}, {district} {zip}</p>
+                                    <p className="mt-2 text-gray-400">T: {phonenumber}</p>
+                                </div>
+                            )}
+                        </div>
+
+                        {/* STEP 2: SHIPPING */}
+                        <div className={`border-t-4 border-gray-200 bg-[#FAFAFA] p-8 md:p-10 transition-all ${currentstep === 2 ? 'border-[#1B3B4D] shadow-lg bg-white' : ''}`}>
+                            <div className="flex justify-between items-center mb-8">
+                                <h2 className={`text-2xl font-black uppercase tracking-widest flex items-center gap-4 ${currentstep >= 2 ? 'text-[#1B3B4D]' : 'text-gray-300'}`}>
+                                    <span className={`text-sm border px-2 py-1 ${currentstep >= 2 ? 'border-[#1B3B4D]' : 'border-gray-300'}`}>02.</span> shipping method
+                                </h2>
+                                {currentstep > 2 && (
+                                    <button onClick={() => setcurrentstep(2)} className="text-[10px] font-bold uppercase tracking-[0.2em] text-gray-400 hover:text-[#1B3B4D] underline underline-offset-4">edit</button>
+                                )}
+                            </div>
+
+                            {currentstep === 2 ? (
+                                <div className="flex flex-col gap-6">
+                                    <label className={`border p-6 flex justify-between items-center cursor-pointer transition-colors ${shippingmethod === "standard" ? "border-[#1B3B4D] bg-[#FAFAFA]" : "border-gray-200 hover:border-gray-400"}`}>
+                                        <div className="flex items-center gap-6">
+                                            <input type="radio" name="shipping" value="standard" checked={shippingmethod === "standard"} onChange={(e) => setshippingmethod(e.target.value)} className="w-5 h-5 accent-[#1B3B4D]" />
+                                            <div>
+                                                <span className="font-bold uppercase tracking-[0.1em] text-sm block mb-1">Standard Delivery</span>
+                                                <span className="text-gray-500 text-xs">Arrives in 2-3 business days</span>
+                                            </div>
+                                        </div>
+                                        <span className="font-black text-lg">৳80</span>
+                                    </label>
+
+                                    <label className={`border p-6 flex justify-between items-center cursor-pointer transition-colors ${shippingmethod === "express" ? "border-[#1B3B4D] bg-[#FAFAFA]" : "border-gray-200 hover:border-gray-400"}`}>
+                                        <div className="flex items-center gap-6">
+                                            <input type="radio" name="shipping" value="express" checked={shippingmethod === "express"} onChange={(e) => setshippingmethod(e.target.value)} className="w-5 h-5 accent-[#1B3B4D]" />
+                                            <div>
+                                                <span className="font-bold uppercase tracking-[0.1em] text-sm block mb-1">Express Delivery</span>
+                                                <span className="text-gray-500 text-xs">Same day delivery (Order before 2 PM)</span>
+                                            </div>
+                                        </div>
+                                        <span className="font-black text-lg">৳240</span>
+                                    </label>
+
+                                    <div className="mt-4 border-t border-gray-200 pt-6">
+                                        <button onClick={() => setcurrentstep(3)} className="bg-[#1B3B4D] text-white px-8 py-4 font-bold uppercase tracking-[0.2em] text-xs hover:bg-black transition-colors self-start">
+                                            continue to payment
+                                        </button>
+                                    </div>
+                                </div>
+                            ) : currentstep > 2 ? (
+                                <div className="text-gray-600 text-sm font-medium">
+                                    <span className="uppercase tracking-widest text-[#1B3B4D] font-bold">{shippingmethod} Delivery</span>
+                                    <span className="text-gray-400 ml-4">({shippingmethod === "standard" ? "৳80" : "৳240"})</span>
+                                </div>
+                            ) : null}
+                        </div>
+
+                        {/* STEP 3: PAYMENT */}
+                        <div className={`border-t-4 border-gray-200 bg-[#FAFAFA] p-8 md:p-10 transition-all ${currentstep === 3 ? 'border-[#1B3B4D] shadow-lg bg-white' : ''}`}>
+                            <div className="flex justify-between items-center mb-8">
+                                <h2 className={`text-2xl font-black uppercase tracking-widest flex items-center gap-4 ${currentstep >= 3 ? 'text-[#1B3B4D]' : 'text-gray-300'}`}>
+                                    <span className={`text-sm border px-2 py-1 ${currentstep >= 3 ? 'border-[#1B3B4D]' : 'border-gray-300'}`}>03.</span> payment
+                                </h2>
+                                {currentstep > 3 && (
+                                    <button onClick={() => setcurrentstep(3)} className="text-[10px] font-bold uppercase tracking-[0.2em] text-gray-400 hover:text-[#1B3B4D] underline underline-offset-4">edit</button>
+                                )}
+                            </div>
+
+                            {currentstep === 3 ? (
+                                <div className="flex flex-col gap-6">
+                                    <div className="border border-[#1B3B4D] bg-[#FAFAFA] p-6 flex items-start gap-4">
+                                        <div className="mt-1 w-4 h-4 bg-[#1B3B4D] rounded-none"></div>
+                                        <div>
+                                            <h3 className="font-bold uppercase tracking-[0.1em] text-sm mb-2 text-[#1B3B4D]">Cash on Delivery</h3>
+                                            <p className="text-gray-500 text-sm leading-relaxed">Pay with exact cash when your order is delivered to your address. No credit card required at this time.</p>
+                                        </div>
+                                    </div>
+                                    <div className="mt-4 border-t border-gray-200 pt-6">
+                                        <button onClick={() => setcurrentstep(4)} className="bg-[#1B3B4D] text-white px-8 py-4 font-bold uppercase tracking-[0.2em] text-xs hover:bg-black transition-colors self-start">
+                                            review order
+                                        </button>
+                                    </div>
+                                </div>
+                            ) : currentstep > 3 ? (
+                                <div className="text-gray-600 text-sm font-medium">
+                                    <span className="uppercase tracking-widest text-[#1B3B4D] font-bold">Cash on Delivery</span>
+                                </div>
+                            ) : null}
+                        </div>
+
+                        {/* STEP 4: REVIEW */}
+                        <div className={`border-t-4 border-gray-200 bg-[#FAFAFA] p-8 md:p-10 transition-all ${currentstep === 4 ? 'border-[#1B3B4D] shadow-lg bg-white' : ''}`}>
+                            <div className="flex justify-between items-center mb-8">
+                                <h2 className={`text-2xl font-black uppercase tracking-widest flex items-center gap-4 ${currentstep >= 4 ? 'text-[#1B3B4D]' : 'text-gray-300'}`}>
+                                    <span className={`text-sm border px-2 py-1 ${currentstep >= 4 ? 'border-[#1B3B4D]' : 'border-gray-300'}`}>04.</span> review & finalize
+                                </h2>
+                            </div>
+
+                            {currentstep === 4 && (
+                                <div className="flex flex-col">
+                                    <p className="text-gray-500 mb-8 text-sm">Please review your information above and the order summary on the right. If everything is correct, confirm your purchase below.</p>
+
+                                    <button onClick={handleplaceorder} className="w-full bg-[#1B3B4D] text-white py-6 font-black uppercase tracking-[0.2em] text-sm hover:bg-black transition-colors shadow-[8px_8px_0px_0px_rgba(104,173,182,1)] hover:shadow-none hover:translate-x-2 hover:translate-y-2 border border-[#1B3B4D]">
+                                        authorize & place order
+                                    </button>
+                                </div>
+                            )}
+                        </div>
+
+                    </div>
+
+                    {/* RIGHT COLUMN: SUMMARY */}
+                    <div className="w-full lg:w-[450px] flex-shrink-0">
+                        <div className="bg-[#FAFAFA] border border-[#1B3B4D] p-8 sticky top-10">
+                            <h2 className="text-sm font-black text-[#1B3B4D] mb-8 uppercase tracking-[0.2em] border-b border-gray-300 pb-4">
+                                order summary
+                            </h2>
+
+                            <div className="flex flex-col gap-6 max-h-96 overflow-y-auto pr-4 mb-8">
+                                {cartitems.map((item) => (
+                                    <div key={item.id} className="flex gap-6 items-start border-b border-gray-200 pb-6">
+                                        <div className="w-20 h-20 border border-gray-200 bg-white flex items-center justify-center p-2 flex-shrink-0">
+                                            {item.product.imageUrl ? (
+                                                <img src={item.product.imageUrl} alt={item.product.name} className="max-h-full object-contain mix-blend-multiply" />
+                                            ) : (
+                                                <span className="text-gray-300 text-[8px] font-bold uppercase tracking-[0.2em]">no img</span>
+                                            )}
+                                        </div>
+                                        <div className="flex flex-col flex-grow">
+                                            <span className="text-[#1B3B4D] font-bold text-sm uppercase tracking-wider mb-1 leading-tight">
+                                                {item.product.name} {item.isCustom === true ? "*" : ""}
+                                            </span>
+                                            <span className="text-gray-400 text-xs mb-2">Qty: {item.quantity}</span>
+                                            <span className="text-[#1B3B4D] font-black">
+                                                ৳{((item.isCustom === true ? item.product.price + 100 : item.product.price) * item.quantity).toFixed(2)}
+                                            </span>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+
+                            <div className="flex flex-col gap-4 text-sm font-bold text-gray-500 uppercase tracking-widest mb-6">
+                                <div className="flex justify-between">
+                                    <span>subtotal</span>
+                                    <span className="text-[#1B3B4D]">৳{subtotal.toFixed(2)}</span>
+                                </div>
+                                <div className="flex justify-between">
+                                    <span>shipping</span>
+                                    <span className="text-[#1B3B4D]">৳{shippingcost.toFixed(2)}</span>
+                                </div>
+                            </div>
+
+                            <div className="flex justify-between items-end pt-6 border-t border-[#1B3B4D]">
+                                <span className="font-black text-[#1B3B4D] uppercase tracking-[0.2em] text-sm">total</span>
+                                <span className="text-3xl font-black text-[#68ADB6]">৳{total.toFixed(2)}</span>
+                            </div>
                         </div>
                     </div>
+
                 </div>
             </div>
+
             {toastmessage !== "" && (
-                <div className="fixed bottom-10 right-10 bg-[#F2C4CE] text-[#2C2B30] px-6 py-4 rounded shadow-2xl font-bold uppercase tracking-wider z-50">
+                <div className="fixed bottom-10 right-10 bg-[#1B3B4D] text-white px-8 py-5 border border-black font-bold uppercase tracking-[0.2em] text-[10px] z-50">
                     {toastmessage}
                 </div>
             )}

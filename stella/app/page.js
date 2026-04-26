@@ -1,59 +1,50 @@
 "use client";
 import Link from "next/link";
 
-export default function dashboardpage() {
+export default function HomePage() {
     return (
-        <div className="min-h-screen bg-[#F3F4F6] font-sans text-[#333333] overflow-hidden relative">
-            <nav className="flex justify-between items-center px-6 md:px-16 py-8 relative z-20">
-                <div className="text-2xl font-black tracking-widest text-[#444444] uppercase">
-                    stella
-                </div>
-                <div className="hidden md:flex gap-12 font-medium text-[#666666]">
-                    <Link href="/products/accessories" className="hover:text-black transition-colors">products</Link>
-                    <Link href="/cart" className="hover:text-black transition-colors">shop</Link>
-                    <Link href="/checkout" className="hover:text-black transition-colors">learn</Link>
-                </div>
-                <div className="flex items-center gap-8">
-                    <Link href="/login" className="font-medium text-[#666666] hover:text-black transition-colors">login</Link>
-                    <button className="bg-white px-8 py-3 rounded-full font-bold shadow-sm hover:shadow-md transition-all text-[#444444]">
-                        get started
-                    </button>
-                </div>
-            </nav>
+        <div className="bg-[#FAFAFA] font-sans text-[#1B3B4D] overflow-hidden min-h-[calc(100vh-80px)] flex items-center relative">
+            <div className="w-full max-w-[1400px] mx-auto px-6 md:px-12 py-10 flex flex-col md:flex-row items-center relative z-20">
 
-            <div className="flex flex-col md:flex-row items-center px-6 md:px-16 pt-10 md:pt-20 relative z-20">
-                <div className="md:w-1/2 flex flex-col items-start gap-6 z-10">
-                    <span className="bg-[#B5E48C] text-[#2C4A1B] px-5 py-2 rounded-full text-sm font-bold tracking-wide">
-                        new
-                    </span>
-                    <h1 className="text-5xl md:text-6xl font-medium leading-[1.1] text-[#333333]">
-                        nutrition, energy, and care—<br />
-                        advanced by stella science
+                <div className="md:w-1/2 flex flex-col items-start gap-8 z-10">
+                    <div className="border border-[#68ADB6] bg-[#EEF6F7] text-[#1B3B4D] px-4 py-1 text-[10px] font-black uppercase tracking-[0.2em]">
+                        New Collection
+                    </div>
+
+                    <h1 className="text-5xl md:text-7xl font-black leading-[1.1] text-[#1B3B4D] tracking-tighter">
+                        Nutrition, Energy,<br />
+                        And Care—<br />
+                        Advanced By<br />
+                        Stella.
                     </h1>
-                    <p className="text-[#777777] text-lg max-w-md leading-relaxed mt-2">
-                        stella's pet biotics nourish your companions and their microbiome to deliver targeted, daily benefits.
+
+                    <p className="text-gray-500 text-sm md:text-base max-w-md leading-relaxed font-medium">
+                        Stella's pet biotics nourish your companions and their microbiome to deliver targeted, daily benefits.
                     </p>
+
                     <Link href="/products/accessories">
-                        <button className="bg-white px-10 py-4 rounded-full font-bold shadow-sm hover:shadow-md transition-all mt-6 text-[#444444] text-lg">
-                            shop now
+                        <button className="mt-4 bg-[#1B3B4D] text-white px-10 py-5 font-black uppercase tracking-[0.2em] text-xs hover:bg-black transition-all border border-[#1B3B4D] shadow-[6px_6px_0px_0px_rgba(104,173,182,1)] hover:shadow-none hover:translate-x-1.5 hover:translate-y-1.5">
+                            Shop Now
                         </button>
                     </Link>
                 </div>
 
-                <div className="md:w-1/2 mt-20 md:mt-0 relative flex justify-center items-center h-[500px]">
-                    <div className="absolute w-[600px] h-[600px] bg-gradient-to-tr from-[#E5E7EB] to-transparent rounded-full opacity-50 blur-3xl"></div>
+                <div className="md:w-1/2 mt-20 md:mt-0 relative flex justify-center items-center h-[600px] w-full">
 
-                    <div className="relative z-10 w-96 h-96 border border-[#CCCCCC] rounded-full border-dashed flex items-center justify-center animate-[spin_60s_linear_infinite]">
-                        <div className="w-72 h-72 border border-[#CCCCCC] rounded-full border-dashed flex items-center justify-center">
-                            <div className="w-40 h-40 bg-gradient-to-tr from-[#B5E48C] to-white rounded-full shadow-2xl flex items-center justify-center">
-                                <span className="text-[#B5E48C] text-6xl">✨</span>
-                            </div>
-                        </div>
+                    <div className="absolute w-[800px] h-[800px] bg-gradient-to-tr from-[#EEF6F7] to-transparent rounded-full opacity-50 blur-3xl"></div>
+
+                    <div className="absolute w-[300px] h-[300px] border border-gray-200 rounded-full border-dashed animate-[spin_40s_linear_infinite_reverse]"></div>
+                    <div className="absolute w-[450px] h-[450px] border border-gray-200 rounded-full border-dashed animate-[spin_60s_linear_infinite]"></div>
+                    <div className="absolute w-[600px] h-[600px] border border-gray-100 rounded-full animate-[spin_90s_linear_infinite_reverse]"></div>
+
+                    <div className="relative z-10 w-48 h-48 rounded-full bg-gradient-to-br from-white to-[#EEF6F7] shadow-[0_20px_50px_rgba(104,173,182,0.2)] flex items-center justify-center border-2 border-white">
+                        <span className="text-5xl drop-shadow-md">✨</span>
                     </div>
 
-                    <div className="absolute top-10 left-20 bg-gradient-to-tr from-[#A1C181] to-white w-16 h-16 rounded-full shadow-lg transform -rotate-12"></div>
-                    <div className="absolute bottom-20 right-10 bg-gradient-to-tr from-[#A1C181] to-white w-24 h-24 rounded-full shadow-xl transform rotate-45"></div>
+                    <div className="absolute top-20 left-10 w-16 h-16 rounded-full bg-gradient-to-br from-white to-[#D0E1E3] shadow-lg animate-bounce" style={{ animationDuration: '4s' }}></div>
+                    <div className="absolute bottom-20 right-10 w-24 h-24 rounded-full bg-gradient-to-br from-[#EEF6F7] to-[#68ADB6] shadow-xl animate-bounce" style={{ animationDuration: '6s', animationDelay: '1s' }}></div>
                 </div>
+
             </div>
         </div>
     );

@@ -1,15 +1,13 @@
 "use client";
 import { useState, useEffect } from "react";
+import Link from "next/link";
 
 export default function accessoriespage() {
     const [products, setproducts] = useState([]);
     const [animalfilter, setanimalfilter] = useState("ALL");
     const [isloading, setisloading] = useState(true);
     const [toastmessage, settoastmessage] = useState("");
-    const [selectedcustomid, setselectedcustomid] = useState("");
-    const [customdescription, setcustomdescription] = useState("");
-    const [iscustomloading, setiscustomloading] = useState(false);
-    const [searchterm, setsearchterm] = useState("");
+
     useEffect(() => {
         async function fetchproducts() {
             setisloading(true);
@@ -50,194 +48,127 @@ export default function accessoriespage() {
         }, 3000);
     }
 
-    async function submitcustomorder() {
-        if (selectedcustomid === "") {
-            settoastmessage("please search and select an accessory first");
-            setTimeout(() => settoastmessage(""), 3000);
-            return;
-        }
-        if (customdescription === "") {
-            settoastmessage("please write a description");
-            setTimeout(() => settoastmessage(""), 3000);
-            return;
-        }
-        setiscustomloading(true);
-        try {
-            const response = await fetch("/api/cart", {
-                method: "POST",
-                body: JSON.stringify({
-                    productid: selectedcustomid,
-                    iscustom: true,
-                    customnote: customdescription
-                })
-            });
-
-            if (response.ok === true) {
-                settoastmessage("custom item added to your cart!");
-                setselectedcustomid("");
-                setcustomdescription("");
-                setsearchterm("");
-            } else {
-                settoastmessage("failed to add to cart.");
-            }
-        } catch (error) {
-            settoastmessage("network error occurred.");
-        } finally {
-            setiscustomloading(false);
-            setTimeout(() => settoastmessage(""), 3000);
-        }
-    }
     let displayproducts = [];
-    let selectedproduct = null;
     if (Array.isArray(products) === true) {
-        for (let i = 0; i < products.length; i = i + 1) {
-            displayproducts.push(products[i]);
-            if (products[i].id === selectedcustomid) {
-                selectedproduct = products[i];
-            }
-        }
+        displayproducts = products;
     }
 
-    let searchresults = [];
-    if (searchterm !== "") {
-        for (let i = 0; i < displayproducts.length; i = i + 1) {
-            if (displayproducts[i].name.toLowerCase().includes(searchterm.toLowerCase())) {
-                searchresults.push(displayproducts[i]);
-            }
-        }
-    }
-
-    if (selectedproduct !== null && searchterm === selectedproduct.name) {
-        searchresults = [];
-    }
     if (isloading === true) {
         return (
-            <div className="p-10 flex justify-center items-center h-screen bg-[#2C2B30]">
-                <p className="text-[#F2C4CE] font-bold text-xl uppercase tracking-widest animate-pulse">loading...</p>
+            <div className="p-10 flex justify-center items-center min-h-screen bg-white">
+                <p className="text-[#1B3B4D] font-bold text-xl uppercase tracking-widest animate-pulse">loading products...</p>
             </div>
         );
     }
-    return (
-        <div className="p-10 font-sans bg-[#2C2B30] min-h-screen relative">
-            <div className="flex justify-between items-center mb-10 border-b border-[#F2C4CE]/30 pb-6">
-                <h1 className="text-4xl font-bold text-[#F2C4CE] tracking-wider uppercase">
-                    accessories
-                </h1>
-                <div className="flex items-center gap-4">
-                    <label className="text-[#F2C4CE] font-bold uppercase tracking-wide">filter for:</label>
-                    <select
-                        className="bg-[#2C2B30] border border-[#F2C4CE]/30 text-[#F2C4CE] p-3 rounded focus:outline-none focus:border-[#F2C4CE] transition-colors"
-                        value={animalfilter}
-                        onChange={(e) => setanimalfilter(e.target.value)}
-                    >
-                        <option value="ALL">all pets</option>
-                        <option value="CAT">cats only</option>
-                        <option value="DOG">dogs only</option>
-                    </select>
-                </div>
-            </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-8">
-                {displayproducts.length === 0 ? (
-                    <p className="text-[#F2C4CE] text-lg col-span-full text-center mt-10">no products found</p>
-                ) : (
-                    displayproducts.map((item) => (
-                        <div key={item.id} className="bg-[#2C2B30] rounded border border-[#F2C4CE]/30 overflow-hidden flex flex-col shadow-xl">
-                            <div className="h-64 bg-white flex items-center justify-center p-4">
-                                {item.imageUrl !== null && item.imageUrl !== "" ? (
-                                    <img src={item.imageUrl} alt={item.name} className="max-h-full object-contain" />
-                                ) : (
-                                    <span className="text-black font-bold uppercase">no image</span>
-                                )}
+    return (
+        <div className="bg-white min-h-screen font-sans text-[#1B3B4D] p-6 md:p-12 pb-20 relative">
+
+            <div className="max-w-[1400px] mx-auto">
+
+                <header className="mb-12 flex flex-col md:flex-row justify-between items-start md:items-end border-b border-[#1B3B4D] pb-6 gap-6">
+                    <div>
+                        <h1 className="text-4xl md:text-6xl font-black uppercase tracking-tighter leading-none">
+                            Accessories &<br />Litter.
+                        </h1>
+                    </div>
+                    <div className="text-xs uppercase tracking-[0.2em] font-bold text-gray-400">
+                        stella pet care // collection
+                    </div>
+                </header>
+
+                <div className="flex flex-col md:flex-row gap-10 lg:gap-20">
+
+                    <div className="w-full md:w-64 flex-shrink-0">
+                        <div className="mb-10">
+                            <h3 className="font-bold text-sm mb-4 border-b border-gray-200 pb-3 uppercase tracking-widest text-[#1B3B4D]">filter by animal</h3>
+                            <div className="flex flex-col gap-4 mt-4">
+                                <label className="flex items-center gap-3 cursor-pointer text-sm text-gray-500 hover:text-[#1B3B4D] transition-colors">
+                                    <input type="radio" name="animal" value="ALL" checked={animalfilter === "ALL"} onChange={(e) => setanimalfilter(e.target.value)} className="w-4 h-4 accent-[#1B3B4D]" />
+                                    All Pets
+                                </label>
+                                <label className="flex items-center gap-3 cursor-pointer text-sm text-gray-500 hover:text-[#1B3B4D] transition-colors">
+                                    <input type="radio" name="animal" value="CAT" checked={animalfilter === "CAT"} onChange={(e) => setanimalfilter(e.target.value)} className="w-4 h-4 accent-[#1B3B4D]" />
+                                    Cats Only
+                                </label>
+                                <label className="flex items-center gap-3 cursor-pointer text-sm text-gray-500 hover:text-[#1B3B4D] transition-colors">
+                                    <input type="radio" name="animal" value="DOG" checked={animalfilter === "DOG"} onChange={(e) => setanimalfilter(e.target.value)} className="w-4 h-4 accent-[#1B3B4D]" />
+                                    Dogs Only
+                                </label>
                             </div>
-                            <div className="p-6 flex flex-col flex-grow">
-                                <h2 className="text-xl font-bold text-[#F2C4CE] mb-2">{item.name}</h2>
-                                <p className="text-[#F2C4CE] text-sm mb-4 flex-grow opacity-70">{item.description}</p>
-                                <div className="flex justify-between items-center mt-4">
-                                    <span className="text-2xl font-bold text-[#F2C4CE]">৳{item.price.toFixed(2)}</span>
-                                    <button onClick={() => addtocart(item)} className="bg-[#F2C4CE] text-[#2C2B30] px-4 py-2 rounded font-bold uppercase text-sm tracking-wider hover:opacity-80 transition-opacity">
-                                        add to cart
-                                    </button>
+                        </div>
+
+                        <div className="mb-10">
+                            <h3 className="font-bold text-sm mb-4 border-b border-gray-200 pb-3 uppercase tracking-widest text-[#1B3B4D]">stock status</h3>
+                            <div className="flex flex-col gap-4 mt-4">
+                                <label className="flex items-center gap-3 cursor-pointer text-sm text-gray-500">
+                                    <input type="checkbox" checked readOnly className="w-4 h-4 accent-[#1B3B4D]" />
+                                    In stock
+                                </label>
+                            </div>
+                        </div>
+
+                        <Link href="/custom">
+                            <div className="bg-[#F9FAFB] border border-gray-200 p-6 rounded text-center cursor-pointer hover:border-[#1B3B4D] transition-colors group">
+                                <h3 className="font-bold uppercase tracking-widest mb-2 text-sm text-[#1B3B4D]">custom order</h3>
+                                <p className="text-xs text-gray-500 mb-4">design your own unique pet accessory.</p>
+                                <span className="border border-[#1B3B4D] text-[#1B3B4D] px-4 py-2 text-xs font-bold uppercase group-hover:bg-[#1B3B4D] group-hover:text-white transition-colors">design now</span>
+                            </div>
+                        </Link>
+                    </div>
+
+                    <div className="flex-grow">
+
+                        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 text-sm text-gray-500 gap-4 border-b border-gray-100 pb-4">
+                            <div className="tracking-wide">
+                                Home <span className="mx-2">/</span> Products <span className="mx-2">/</span> <span className="text-[#1B3B4D] font-bold">Accessories</span>
+                            </div>
+                            <div className="flex items-center gap-6">
+                                <span>Show : <span className="text-[#1B3B4D] font-bold">All</span></span>
+                                <div className="flex gap-2">
+                                    <span className="text-[#1B3B4D] text-lg cursor-pointer">⊞</span>
+                                    <span className="text-gray-300 text-lg cursor-pointer">⊟</span>
                                 </div>
                             </div>
                         </div>
-                    ))
-                )}
-            </div>
-            <div className="mt-20 border-t-2 border-[#F2C4CE] pt-10 flex flex-col items-center">
-                <h2 className="text-4xl font-bold text-[#F2C4CE] tracking-wider uppercase mb-8 text-center">
-                    custom order
-                </h2>
 
-                <div className="flex flex-col items-center gap-6 w-full max-w-4xl">
-
-                    <div className="w-full md:w-1/2 relative flex flex-col items-center z-40">
-                        <input
-                            type="text"
-                            placeholder="search for an accessory..."
-                            value={searchterm}
-                            onChange={(e) => {
-                                setsearchterm(e.target.value);
-                                setselectedcustomid("");
-                            }}
-                            className="w-full bg-[#2C2B30] border border-[#F2C4CE]/30 text-[#F2C4CE] p-4 rounded focus:outline-none focus:border-[#F2C4CE] text-center"
-                        />
-                        {searchresults.length > 0 ? (
-                            <div className="absolute top-full mt-1 w-full bg-[#232227] border border-[#F2C4CE]/30 rounded shadow-2xl max-h-48 overflow-y-auto">
-                                {searchresults.map((item) => (
-                                    <div
-                                        key={item.id}
-                                        onClick={() => {
-                                            setselectedcustomid(item.id);
-                                            setsearchterm(item.name);
-                                        }}
-                                        className="p-4 hover:bg-[#35343A] cursor-pointer border-b border-[#45444A] text-[#F2C4CE] text-center"
-                                    >
-                                        {item.name} (৳{item.price})
+                        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
+                            {displayproducts.length === 0 ? (
+                                <p className="text-gray-500 font-medium">no products found.</p>
+                            ) : (
+                                displayproducts.map((item) => (
+                                    <div key={item.id} className="border border-gray-200 rounded p-5 flex flex-col hover:border-[#1B3B4D] transition-colors relative group bg-white">
+                                        <div className="absolute top-4 left-4 bg-[#1B3B4D] text-white text-[10px] font-bold px-2 py-1 uppercase tracking-wider z-10">
+                                            IN STOCK
+                                        </div>
+                                        <div className="h-56 flex items-center justify-center mb-6 p-4">
+                                            {item.imageUrl !== null && item.imageUrl !== "" ? (
+                                                <img src={item.imageUrl} alt={item.name} className="max-h-full object-contain group-hover:scale-105 transition-transform duration-300" />
+                                            ) : (
+                                                <span className="text-gray-300 text-xs uppercase font-bold tracking-widest">no image</span>
+                                            )}
+                                        </div>
+                                        <div className="text-center flex flex-col flex-grow">
+                                            <h2 className="font-bold text-[15px] text-[#1B3B4D] mb-1 hover:text-gray-500 cursor-pointer">{item.name}</h2>
+                                            <p className="text-xs text-gray-400 mb-4 line-clamp-1">{item.description}</p>
+                                            <div className="mt-auto">
+                                                <p className="font-bold text-[#1B3B4D] text-lg mb-5">৳{item.price.toFixed(2)}</p>
+                                                <button onClick={() => addtocart(item)} className="w-full border border-[#1B3B4D] text-[#1B3B4D] py-2.5 text-xs font-bold uppercase tracking-widest hover:bg-[#1B3B4D] hover:text-white transition-colors">
+                                                    Add to Cart
+                                                </button>
+                                            </div>
+                                        </div>
                                     </div>
-                                ))}
-                            </div>
-                        ) : null}
-                    </div>
-
-                    <div className="w-64 h-64 border border-[#F2C4CE]/30 bg-white rounded flex flex-col items-center justify-center overflow-hidden">
-                        {selectedproduct !== null && selectedproduct.imageUrl !== null && selectedproduct.imageUrl !== "" ? (
-                            <img src={selectedproduct.imageUrl} alt="preview" className="max-h-full object-contain p-2" />
-                        ) : (
-                            <span className="text-black font-bold uppercase tracking-widest text-sm text-center px-4">
-                                select a product
-                            </span>
-                        )}
-                    </div>
-
-                    <textarea
-                        value={customdescription}
-                        onChange={(e) => setcustomdescription(e.target.value)}
-                        placeholder="example: i want this item in gold color..."
-                        className="w-full bg-[#2C2B30] border border-[#F2C4CE]/30 text-white p-4 rounded focus:outline-none focus:border-[#F2C4CE] resize-none h-40 text-center"
-                    ></textarea>
-                    <div className="flex flex-col items-center mt-2 w-full">
-                        {selectedproduct !== null ? (
-                            <div className="text-center mb-6">
-                                <p className="text-[#F2C4CE] font-bold opacity-80 uppercase text-sm tracking-wider">
-                                    base price: ৳{selectedproduct.price.toFixed(2)} <br />
-                                    custom fee: ৳100.00
-                                </p>
-                                <span className="text-3xl font-bold text-[#F2C4CE] mt-2 block tracking-widest">
-                                    total: ৳{(selectedproduct.price + 100).toFixed(2)}
-                                </span>
-                            </div>
-                        ) : null}
-
-                        <button onClick={submitcustomorder} disabled={iscustomloading} className="bg-[#F2C4CE] text-[#2C2B30] px-12 py-4 rounded font-bold uppercase tracking-widest hover:opacity-80 transition-opacity w-full md:w-1/2">
-                            {iscustomloading === true ? "adding..." : "add custom to cart"}
-                        </button>
+                                ))
+                            )}
+                        </div>
                     </div>
                 </div>
+
             </div>
 
             {toastmessage !== "" ? (
-                <div className="fixed bottom-10 right-10 bg-[#F2C4CE] text-[#2C2B30] px-6 py-4 rounded shadow-2xl font-bold uppercase tracking-wider z-50">
+                <div className="fixed bottom-10 right-10 bg-[#1B3B4D] text-white px-8 py-4 rounded shadow-2xl font-bold uppercase tracking-wider text-xs z-50">
                     {toastmessage}
                 </div>
             ) : null}
