@@ -13,11 +13,17 @@ model User {
   email        String        @unique
   name         String?
   phone        String?
+  role         Role          @default(customer)
   orders       Order[]
   appointments Appointment[]
   cartitems    CartItem[]
   createdAt    DateTime      @default(now())
   updatedAt    DateTime      @updatedAt
+}
+
+enum Role {
+  admin
+  customer
 }
 
 enum AnimalType {
