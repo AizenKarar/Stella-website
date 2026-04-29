@@ -1,27 +1,42 @@
+import { NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
-
+import { auth } from "@clerk/nextjs/server";
 const prisma = new PrismaClient();
 export async function GET() {
     try {
-        const currentuser = "4976ff87-d687-459d-84f4-d1965b343cf9";
+        const authdata = await auth();
+        const clerkid = authdata.userId;
+        if (clerkid === null) {
+            return NextResponse.json({ error: "unauthorized" });
+        }
+        const dbuser = await prisma.user.findUnique({
+            where: { clerkId: clerkid }
+        });
+        const currentuser = dbuser.id;
         const cartitems = await prisma.cartItem.findMany({
             where: { userid: currentuser },
             include: { product: true }
         });
-        return Response.json(cartitems);
+        return NextResponse.json(cartitems);
     } catch (error) {
-        console.log("cart get error:", error);
-        return Response.json({ error: "failed" }, { status: 500 });
+        return NextResponse.json({ error: "failed" });
     }
 }
 export async function POST(request) {
     try {
-        const currentuser = "4976ff87-d687-459d-84f4-d1965b343cf9";
+        const authdata = await auth();
+        const clerkid = authdata.userId;
+        if (clerkid === null) {
+            return NextResponse.json({ error: "unauthorized" });
+        }
+        const dbuser = await prisma.user.findUnique({
+            where: { clerkId: clerkid }
+        });
+        const currentuser = dbuser.id;
         const body = await request.json();
         const selectedproduct = body.productid;
         const iscustom = body.iscustom || false;
         const customnote = body.customnote || "";
-
         if (iscustom === true) {
             await prisma.cartItem.create({
                 data: {
@@ -36,8 +51,7 @@ export async function POST(request) {
             const existing = await prisma.cartItem.findFirst({
                 where: { userid: currentuser, productid: selectedproduct, isCustom: false }
             });
-
-            if (existing) {
+            if (existing !== null) {
                 await prisma.cartItem.update({
                     where: { id: existing.id },
                     data: { quantity: existing.quantity + 1 }
@@ -53,47 +67,37 @@ export async function POST(request) {
                 });
             }
         }
-        return Response.json({ success: true });
+        return NextResponse.json({ success: true });
     } catch (error) {
-        console.log("cart post error:", error);
-        return Response.json({ error: "failed" }, { status: 500 });
+        return NextResponse.json({ error: "failed" });
     }
 }
-
 export async function PUT(request) {
     try {
         const body = await request.json();
         const itemid = body.itemid;
         const newquantity = body.quantity;
-
         if (newquantity <= 0) {
-            return Response.json({ error: "invalid quantity" }, { status: 400 });
+            return NextResponse.json({ error: "invalid quantity" });
         }
-
         await prisma.cartItem.update({
             where: { id: itemid },
             data: { quantity: newquantity }
         });
-
-        return Response.json({ success: true });
+        return NextResponse.json({ success: true });
     } catch (error) {
-        console.log("cart put error:", error);
-        return Response.json({ error: "failed" }, { status: 500 });
+        return NextResponse.json({ error: "failed" });
     }
 }
-
 export async function DELETE(request) {
     try {
         const body = await request.json();
         const itemid = body.itemid;
-
         await prisma.cartItem.delete({
             where: { id: itemid }
         });
-
-        return Response.json({ success: true });
+        return NextResponse.json({ success: true });
     } catch (error) {
-        console.log("cart delete error:", error);
-        return Response.json({ error: "failed" }, { status: 500 });
+        return NextResponse.json({ error: "failed" });
     }
 }

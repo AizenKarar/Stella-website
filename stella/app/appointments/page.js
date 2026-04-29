@@ -1,6 +1,5 @@
 "use client";
-import {useState, useEffect} from "react";
-
+import { useState, useEffect } from "react";
 export default function appointmentpage() {
     const [hospitalsdata, sethospitalsdata] = useState([]);
     const [division, setdivision] = useState("");
@@ -15,17 +14,17 @@ export default function appointmentpage() {
     useEffect(() => {
         async function fetchhospitals() {
             try {
-                const response = await fetch("/api/hospitals", {cache: "no-store"});
+                const response = await fetch("/api/hospitals", { cache: "no-store" });
                 const data = await response.json();
-                if(Array.isArray(data)===true){
+                if (Array.isArray(data) === true) {
                     sethospitalsdata(data);
-                }else if(data.data!==undefined){
+                } else if (data.data !== undefined) {
                     sethospitalsdata(data.data);
-                }else{
+                } else {
                     sethospitalsdata([]);
                 }
                 setisloading(false);
-            } catch(error) {
+            } catch (error) {
                 sethospitalsdata([]);
                 setisloading(false);
             }
@@ -34,55 +33,55 @@ export default function appointmentpage() {
     }, []);
 
     let safehospitals = [];
-    if(Array.isArray(hospitalsdata)===true){
+    if (Array.isArray(hospitalsdata) === true) {
         safehospitals = hospitalsdata;
     }
 
     let availabledivisions = [];
-    for(let i=0; i<safehospitals.length; i=i+1){
+    for (let i = 0; i < safehospitals.length; i = i + 1) {
         let currentdivision = safehospitals[i].division;
         let isduplicate = false;
-        for(let j=0; j<availabledivisions.length; j=j+1){
-            if(availabledivisions[j]===currentdivision){
+        for (let j = 0; j < availabledivisions.length; j = j + 1) {
+            if (availabledivisions[j] === currentdivision) {
                 isduplicate = true;
             }
         }
-        if(isduplicate===false){
+        if (isduplicate === false) {
             availabledivisions.push(currentdivision);
         }
     }
 
     let availablecities = [];
-    for(let i=0; i<safehospitals.length; i=i+1){
+    for (let i = 0; i < safehospitals.length; i = i + 1) {
         let currenthospital = safehospitals[i];
-        if(currenthospital.division===division){
+        if (currenthospital.division === division) {
             let currentcity = currenthospital.city;
             let isduplicate = false;
-            for(let j=0; j<availablecities.length; j=j+1){
-                if(availablecities[j]===currentcity){
+            for (let j = 0; j < availablecities.length; j = j + 1) {
+                if (availablecities[j] === currentcity) {
                     isduplicate = true;
                 }
             }
-            if(isduplicate===false){
+            if (isduplicate === false) {
                 availablecities.push(currentcity);
             }
         }
     }
 
     let availablehospitals = [];
-    for(let i=0; i<safehospitals.length; i=i+1){
+    for (let i = 0; i < safehospitals.length; i = i + 1) {
         let currenthospital = safehospitals[i];
-        if(currenthospital.division===division){
-            if(currenthospital.city===city){
+        if (currenthospital.division === division) {
+            if (currenthospital.city === city) {
                 availablehospitals.push(currenthospital);
             }
         }
     }
 
     let availabledoctors = [];
-    for(let i=0; i<safehospitals.length; i=i+1){
+    for (let i = 0; i < safehospitals.length; i = i + 1) {
         let currenthospital = safehospitals[i];
-        if(currenthospital.id===hospitalid){
+        if (currenthospital.id === hospitalid) {
             availabledoctors = currenthospital.doctors;
         }
     }
@@ -99,10 +98,10 @@ export default function appointmentpage() {
         const stringifiedbody = JSON.stringify(requestbody);
         const response = await fetch("/api/appointments", {
             method: "POST",
-            headers: {"Content-Type": "application/json"},
+            headers: { "Content-Type": "application/json" },
             body: stringifiedbody,
         });
-        if(response.ok===true){
+        if (response.ok === true) {
             setmessage("success! appointment booked.");
             setdivision("");
             setcity("");
@@ -115,7 +114,7 @@ export default function appointmentpage() {
         }
     }
 
-    if(isloading===true){
+    if (isloading === true) {
         return (
             <div className="p-10 flex justify-center items-center min-h-screen bg-white">
                 <p className="text-[#1B3B4D] font-bold text-sm uppercase tracking-[0.2em] animate-pulse">loading clinics...</p>
@@ -124,9 +123,9 @@ export default function appointmentpage() {
     }
 
     let messagebox = null;
-    if(message!==""){
+    if (message !== "") {
         let messagestyle = "bg-[#FAFAFA] text-[#1B3B4D] border border-[#1B3B4D]";
-        if(message==="oops! something went wrong."){
+        if (message === "oops! something went wrong.") {
             messagestyle = "bg-white text-red-600 border border-red-600";
         }
         messagebox = (
@@ -138,7 +137,7 @@ export default function appointmentpage() {
 
     return (
         <div className="bg-white min-h-screen font-sans text-[#1B3B4D] p-6 md:p-12 pb-20 relative">
-            
+
             <div className="max-w-[1400px] mx-auto">
                 <header className="mb-16 flex flex-col md:flex-row justify-between items-start md:items-end border-b border-[#1B3B4D] pb-6 gap-6">
                     <div>
@@ -152,7 +151,7 @@ export default function appointmentpage() {
                 </header>
 
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-20">
-                    
+
                     <div className="lg:col-span-5 flex flex-col gap-8">
                         <div className="w-full aspect-square border border-gray-200 bg-[#FAFAFA] flex flex-col items-center justify-center p-10 relative">
                             <span className="absolute top-4 left-4 text-[10px] uppercase font-bold tracking-[0.2em] text-gray-400">expert care</span>
@@ -168,7 +167,7 @@ export default function appointmentpage() {
 
                     <div className="lg:col-span-7 flex flex-col justify-center">
                         <form onSubmit={submitappointment} className="flex flex-col gap-8">
-                            
+
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                                 <div className="flex flex-col">
                                     <label className="text-[10px] font-bold uppercase tracking-[0.2em] block mb-3 text-gray-500">01. division</label>
@@ -200,7 +199,7 @@ export default function appointmentpage() {
                                             setdoctorid("");
                                         }}
                                         required
-                                        disabled={division===""}
+                                        disabled={division === ""}
                                     >
                                         <option value="">-- select city --</option>
                                         {availablecities.map((c) => (
@@ -209,7 +208,7 @@ export default function appointmentpage() {
                                     </select>
                                 </div>
                             </div>
-                            
+
                             <div className="flex flex-col">
                                 <label className="text-[10px] font-bold uppercase tracking-[0.2em] block mb-3 text-gray-500">03. hospital</label>
                                 <select
@@ -220,7 +219,7 @@ export default function appointmentpage() {
                                         setdoctorid("");
                                     }}
                                     required
-                                    disabled={city===""}
+                                    disabled={city === ""}
                                 >
                                     <option value="">-- select hospital --</option>
                                     {availablehospitals.map((h) => (
@@ -236,7 +235,7 @@ export default function appointmentpage() {
                                     value={doctorid}
                                     onChange={(e) => setdoctorid(e.target.value)}
                                     required
-                                    disabled={hospitalid===""}
+                                    disabled={hospitalid === ""}
                                 >
                                     <option value="">-- select doctor --</option>
                                     {availabledoctors.map((doc) => (
@@ -268,8 +267,8 @@ export default function appointmentpage() {
                                 </div>
                             </div>
 
-                            <button 
-                                type="submit" 
+                            <button
+                                type="submit"
                                 className="w-full bg-[#1B3B4D] text-white py-6 mt-8 font-black uppercase tracking-[0.2em] text-sm hover:bg-black transition-all shadow-[8px_8px_0px_0px_rgba(104,173,182,1)] hover:shadow-none hover:translate-x-2 hover:translate-y-2 border border-[#1B3B4D] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-x-0 disabled:hover:translate-y-0 disabled:hover:shadow-[8px_8px_0px_0px_rgba(104,173,182,1)]"
                             >
                                 finalize booking

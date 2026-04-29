@@ -14,13 +14,26 @@ export default async function RootLayout({ children }) {
     let isadmin = false;
     if (authuser !== null) {
         const useremail = authuser.emailAddresses[0].emailAddress;
-        const dbuser = await prisma.user.findUnique({
+        const userid = authuser.id;
+        let username = "user";
+        if (authuser.firstName !== null) {
+            username = authuser.firstName;
+        }
+        let dbuser = await prisma.user.findUnique({
             where: { email: useremail }
         });
-        if (dbuser !== null) {
-            if (dbuser.role === "admin") {
-                isadmin = true;
-            }
+        if (dbuser === null) {
+            dbuser = await prisma.user.create({
+                data: {
+                    clerkId: userid,
+                    email: useremail,
+                    name: username,
+                    role: "customer"
+                }
+            });
+        }
+        if (dbuser.role === "admin") {
+            isadmin = true;
         }
     }
     return (

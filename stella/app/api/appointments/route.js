@@ -1,11 +1,19 @@
-import { NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client';
-
+import { NextResponse } from "next/server";
+import { PrismaClient } from "@prisma/client";
+import { auth } from "@clerk/nextjs/server";
 const prisma = new PrismaClient();
 export async function POST(request) {
     try {
+        const authdata = await auth();
+        const clerkid = authdata.userId;
+        if (clerkid === null) {
+            return NextResponse.json({ message: "unauthorized" });
+        }
+        const dbuser = await prisma.user.findUnique({
+            where: { clerkId: clerkid }
+        });
+        const currentuser = dbuser.id;
         const body = await request.json();
-        const myuserid = "4976ff87-d687-459d-84f4-d1965b343cf9";
         const mydoctorid = body.doctorId;
         const mydate = body.date;
         const mytime = body.time;
@@ -13,17 +21,16 @@ export async function POST(request) {
         const finaldateobject = new Date(combineddatestring);
         const savedappointment = await prisma.appointment.create({
             data: {
-                userId: myuserid,
+                userId: currentuser,
                 doctorId: mydoctorid,
-                date: finaldateobject,
+                date: finaldateobject
             }
         });
         return NextResponse.json({
-            message: "Yay! Appointment Booked Successfully",
+            message: "success",
             data: savedappointment
         });
     } catch (error) {
-        console.log(error);
-        return NextResponse.json({ message: "Sorry, the server failed to book the appointment." });
+        return NextResponse.json({ message: "failed" });
     }
 }
