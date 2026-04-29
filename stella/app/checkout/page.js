@@ -1,6 +1,5 @@
 "use client";
 import { useState, useEffect } from "react";
-import Link from "next/link";
 
 export default function checkoutpage() {
     const [cartitems, setcartitems] = useState([]);
@@ -121,7 +120,6 @@ export default function checkoutpage() {
             const response = await fetch("/api/checkout", {
                 method: "POST",
                 body: JSON.stringify({
-                    email: "anjum.haque.shruti@g.bracu.ac.bd",
                     address: fulladdress,
                     paymentmethod: "cash on delivery",
                     deliverymethod: shippingmethod + " delivery"
