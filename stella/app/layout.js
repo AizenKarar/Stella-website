@@ -61,7 +61,19 @@ export default async function RootLayout({ children }) {
                                     <Link href="/blogs" className="hover:text-[#68adb6] transition-colors">blog</Link>
                                     {isadmin === true ? (
                                         <>
-                                            <Link href="/admin/add-product" className="text-[#68adb6] hover:text-[#1b3b4d] transition-colors">upload</Link>
+                                            <div className="relative group">
+                                                <button className="text-[#68adb6] hover:text-[#1b3b4d] uppercase tracking-[0.15em] flex items-center gap-2 transition-colors py-2 font-bold text-xs">
+                                                    upload <span className="text-[#1b3b4d] text-[10px] mt-0.5">▼</span>
+                                                </button>
+                                                <div className="absolute top-full left-0 pt-4 w-48 hidden group-hover:flex flex-col">
+                                                    <div className="bg-white border border-[#1b3b4d] flex flex-col shadow-[4px_4px_0px_0px_rgba(27,59,77,0.1)]">
+                                                        <a href="/admin/add-product" className="text-[#1b3b4d] p-4 hover:bg-[#1b3b4d] hover:text-white transition-colors border-b border-gray-100">products</a>
+                                                        <a href="/admin/add-clinic" className="text-[#1b3b4d] p-4 hover:bg-[#1b3b4d] hover:text-white transition-colors border-b border-gray-100">clinics</a>
+                                                        <a href="/admin/add-doctor" className="text-[#1b3b4d] p-4 hover:bg-[#1b3b4d] hover:text-white transition-colors border-b border-gray-100">doctors</a>
+                                                        <a href="/admin/add-blog" className="text-[#1b3b4d] p-4 hover:bg-[#1b3b4d] hover:text-white transition-colors">blogs</a>
+                                                    </div>
+                                                </div>
+                                            </div>
                                             <Link href="/admin/analytics" className="text-[#68adb6] hover:text-[#1b3b4d] transition-colors">analytics</Link>
                                         </>
                                     ) : null}
