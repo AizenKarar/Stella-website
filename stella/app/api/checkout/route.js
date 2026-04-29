@@ -1,15 +1,14 @@
 import { NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
 import { auth } from "@clerk/nextjs/server";
-import { Resend } from "resend";
+import nodemailer from "nodemailer";
 const prisma = new PrismaClient();
-const resend = new Resend(process.env.RESEND_API_KEY);
 export async function POST(request) {
     try {
         const authdata = await auth();
         const clerkid = authdata.userId;
         if (clerkid === null) {
-            return NextResponse.json({ error: "unauthorized" });
+            return NextResponse.json({ error: "unauthorized" }, { status: 401 });
         }
         const dbuser = await prisma.user.findUnique({
             where: { clerkId: clerkid }
@@ -82,8 +81,15 @@ export async function POST(request) {
             "payment method: " + paymentmethod + "\n\n" +
             "shipping address:\n" + shippingaddress + "\n\n" +
             "we will prepare your order soon.";
-        await resend.emails.send({
-            from: "onboarding@resend.dev",
+        const transporter = nodemailer.createTransport({
+            service: "gmail",
+            auth: {
+                user: "pocox3prorivo@gmail.com",
+                pass: "bytl gtxz kwnn jpti"
+            }
+        });
+        await transporter.sendMail({
+            from: "pocox3prorivo@gmail.com",
             to: customeremail,
             subject: "your stella receipt - order " + neworder.id,
             text: emailtext
